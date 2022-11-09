@@ -5,7 +5,9 @@ An experimental reader prototype for [Value-Added Text](https://github.com/seete
 ## How to Run
 
 This prototype uses [React Native](https://reactnative.dev).
-Have a look at [_Setting up the Development Environment_](https://reactnative.dev/docs/environment-setup) for all the prerequisites needed to get started.
+Have a look at [_Setting up the Development Environment_](https://reactnative.dev/docs/environment-setup) for how to get stup developing with React Native.
+
+**⚠️ Prerequisite:** The protoype needs [`vat-api`](https://github.com/seetee-io/vat-api) running on `localhost:3000`.
 
 Once setup, run:
 
