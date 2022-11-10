@@ -54,7 +54,7 @@ const ReaderScreen = ({route, navigation}) => {
       setError(null);
 
       const encodedArticleUrl = encodeURIComponent(articleUrl);
-      const fetchUrl = `http://localhost:3000/upcycle?url=${encodedArticleUrl}`;
+      const fetchUrl = `http://192.168.178.68:3000/upcycle?url=${encodedArticleUrl}`;
 
       try {
         const response = await fetch(fetchUrl);
