@@ -1,15 +1,17 @@
-import React from 'react';
-import {useColorScheme} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ThemeContext, theme, darkTheme} from './theme/theme';
-import HomeScreen from './screens/Home';
-import ReaderScreen from './screens/Reader';
+import React from 'react'
+import { useColorScheme } from 'react-native'
 
-const Stack = createNativeStackNavigator();
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+
+import HomeScreen from './screens/Home'
+import ReaderScreen from './screens/Reader'
+import { ThemeContext, theme, darkTheme } from './theme/theme'
+
+const Stack = createNativeStackNavigator()
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === 'dark'
 
   return (
     <ThemeContext.Provider value={isDarkMode ? darkTheme : theme}>
@@ -29,12 +31,12 @@ const App = () => {
           <Stack.Screen
             name="Reader"
             component={ReaderScreen}
-            options={{headerBackTitle: 'Back', title: ''}}
+            options={{ headerBackTitle: 'Back', title: '' }}
           />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeContext.Provider>
-  );
-};
+  )
+}
 
-export default App;
+export default App

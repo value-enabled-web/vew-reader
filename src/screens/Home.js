@@ -1,7 +1,8 @@
-import React from 'react';
-import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
-import BigButton from '../components/BigButton';
-import {useThemed} from '../hooks/useThemed';
+import React from 'react'
+import { SafeAreaView, Text, View, StyleSheet } from 'react-native'
+
+import BigButton from '../components/BigButton'
+import { useThemed } from '../hooks/useThemed'
 
 const styles = theme =>
   StyleSheet.create({
@@ -41,12 +42,12 @@ const styles = theme =>
       flex: 1,
       justifyContent: 'flex-end',
     },
-  });
+  })
 
-const HomeScreen = ({navigation}) => {
-  const themedStyles = useThemed(styles);
+const HomeScreen = ({ navigation }) => {
+  const themedStyles = useThemed(styles)
 
-  const articleUrl = 'https://dergigi.com/2021/01/14/bitcoin-is-time/';
+  const articleUrl = 'https://dergigi.com/2021/01/14/bitcoin-is-time/'
 
   return (
     <SafeAreaView style={themedStyles.background}>
@@ -67,7 +68,7 @@ const HomeScreen = ({navigation}) => {
         </View>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default HomeScreen;
+export default HomeScreen

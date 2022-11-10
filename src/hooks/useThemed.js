@@ -1,12 +1,13 @@
-import {useMemo} from 'react';
-import {useTheme} from '../theme/theme';
+import { useMemo } from 'react'
+
+import { useTheme } from '../theme/theme'
 
 const useThemed = whatever => {
-  const theme = useTheme();
+  const theme = useTheme()
 
-  const themed = useMemo(() => whatever(theme), [whatever, theme]);
+  const themed = useMemo(() => whatever(theme), [whatever, theme])
 
-  return themed;
-};
+  return themed
+}
 
-export {useThemed};
+export { useThemed }

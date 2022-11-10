@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 
 const palette = {
   white: '#FFF',
   foreground: '#0B0B0B',
   background: '#F0F2F3',
-};
+}
 
 export const theme = {
   colors: {
@@ -25,7 +25,7 @@ export const theme = {
       weight: '500',
     },
   },
-};
+}
 
 export const darkTheme = {
   ...theme,
@@ -34,7 +34,7 @@ export const darkTheme = {
     background: palette.black,
     foreground: palette.white,
   },
-};
+}
 
-export const ThemeContext = React.createContext(theme);
-export const useTheme = () => React.useContext(ThemeContext);
+export const ThemeContext = React.createContext(theme)
+export const useTheme = () => React.useContext(ThemeContext)

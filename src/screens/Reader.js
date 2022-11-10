@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   SafeAreaView,
   View,
@@ -7,11 +7,12 @@ import {
   Text,
   StyleSheet,
   useWindowDimensions,
-} from 'react-native';
+} from 'react-native'
+
 import RenderHtml, {
   HTMLElementModel,
   HTMLContentModel,
-} from 'react-native-render-html';
+} from 'react-native-render-html'
 
 const styles = StyleSheet.create({
   container: {
@@ -30,55 +31,55 @@ const styles = StyleSheet.create({
   article: {
     paddingVertical: 10,
   },
-});
+})
 
 const customHTMLElementModels = {
   center: HTMLElementModel.fromCustomModel({
     tagName: 'center',
     contentModel: HTMLContentModel.block,
   }),
-};
+}
 
-const ReaderScreen = ({route, navigation}) => {
-  const {articleUrl} = route.params;
+const ReaderScreen = ({ route, navigation }) => {
+  const { articleUrl } = route.params
 
-  const {width} = useWindowDimensions();
+  const { width } = useWindowDimensions()
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [article, setArticle] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [article, setArticle] = useState(null)
 
   useEffect(() => {
     async function fetchArticle() {
-      setIsLoading(true);
-      setError(null);
+      setIsLoading(true)
+      setError(null)
 
-      const encodedArticleUrl = encodeURIComponent(articleUrl);
-      const fetchUrl = `http://192.168.178.68:3000/upcycle?url=${encodedArticleUrl}`;
+      const encodedArticleUrl = encodeURIComponent(articleUrl)
+      const fetchUrl = `http://192.168.178.68:3000/upcycle?url=${encodedArticleUrl}`
 
       try {
-        const response = await fetch(fetchUrl);
-        const json = await response.json();
-        setArticle(json);
+        const response = await fetch(fetchUrl)
+        const json = await response.json()
+        setArticle(json)
 
-        navigation.setOptions({title: json._data.title});
+        navigation.setOptions({ title: json._data.title })
       } catch (err) {
-        console.error(err);
-        setError(err);
+        console.error(err)
+        setError(err)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
 
-    fetchArticle();
-  }, [articleUrl, navigation]);
+    fetchArticle()
+  }, [articleUrl, navigation])
 
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
         <Text>Failed to load article!</Text>
       </SafeAreaView>
-    );
+    )
   }
 
   if (isLoading || !article) {
@@ -86,7 +87,7 @@ const ReaderScreen = ({route, navigation}) => {
       <SafeAreaView style={styles.container}>
         <ActivityIndicator animating={true} />
       </SafeAreaView>
-    );
+    )
   }
 
   return (
@@ -105,7 +106,7 @@ const ReaderScreen = ({route, navigation}) => {
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default ReaderScreen;
+export default ReaderScreen
