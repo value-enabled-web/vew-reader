@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView, Text, View, StyleSheet } from 'react-native'
+import { SafeAreaView, Text, View, StyleSheet, Pressable } from 'react-native'
 
 import BigButton from '../components/BigButton'
 import { useThemed } from '../hooks/useThemed'
@@ -17,7 +17,7 @@ const styles = theme =>
       marginVertical: theme.spacing.m,
     },
     articleContainer: {
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.backgroundHighlighted,
       padding: theme.spacing.m,
       borderRadius: 8,
       shadowColor: 'black',
@@ -25,8 +25,8 @@ const styles = theme =>
         width: 2,
         height: 2,
       },
-      shadowOpacity: 0.1,
-      shadowRadius: 5,
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
     },
     articleTitle: {
       fontFamily: theme.text.headline.family,
@@ -58,10 +58,14 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={themedStyles.background}>
       <View style={themedStyles.container}>
-        <View style={themedStyles.articleContainer}>
+        <Pressable
+          style={themedStyles.articleContainer}
+          onPress={() => {
+            navigation.navigate('Reader', { url: article.url })
+          }}>
           <Text style={themedStyles.articleTitle}>{article.title}</Text>
           <Text style={themedStyles.articleUrl}>{article.url}</Text>
-        </View>
+        </Pressable>
         <View style={themedStyles.bottom}>
           <BigButton
             title="Read"

@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Text,
   StyleSheet,
+  Button,
   useWindowDimensions,
 } from 'react-native'
 
@@ -49,6 +50,14 @@ const styles = theme =>
     article: {
       paddingBottom: theme.spacing.m,
     },
+    bottomBar: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingHorizontal: theme.spacing.l,
+      paddingVertical: theme.spacing.s,
+      borderTopWidth: 1,
+      borderTopColor: 'lightgray',
+    },
   })
 
 const customHTMLElementModels = {
@@ -63,6 +72,7 @@ const ReaderScreen = ({ route, navigation }) => {
 
   const theme = useTheme()
   const themedStyles = useThemed(styles)
+
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [article, setArticle] = useState(null)
@@ -175,6 +185,18 @@ const ReaderScreen = ({ route, navigation }) => {
           />
         </View>
       </ScrollView>
+      <View style={themedStyles.bottomBar}>
+        <Button
+          title="🏠"
+          color={theme.colors.foreground}
+          onPress={() => navigation.goBack()}
+        />
+        <Button
+          title="💗"
+          color={theme.colors.foreground}
+          onPress={() => console.log('heart pressed')}
+        />
+      </View>
     </SafeAreaView>
   )
 }
