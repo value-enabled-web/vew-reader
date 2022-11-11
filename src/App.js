@@ -6,15 +6,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import HomeScreen from './screens/Home'
 import ReaderScreen from './screens/Reader'
-import { ThemeContext, theme, darkTheme } from './theme/theme'
+import { ThemeContext, lightTheme, darkTheme } from './theme/theme'
 
 const Stack = createNativeStackNavigator()
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark'
+  const theme = useColorScheme() === 'dark' ? darkTheme : lightTheme
 
   return (
-    <ThemeContext.Provider value={isDarkMode ? darkTheme : theme}>
+    <ThemeContext.Provider value={theme}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
@@ -22,6 +22,7 @@ const App = () => {
             component={HomeScreen}
             options={{
               title: '📚 VAT Prototype',
+              headerTintColor: theme.colors.foreground,
               headerShadowVisible: false,
               headerStyle: {
                 backgroundColor: theme.colors.background,
@@ -31,7 +32,9 @@ const App = () => {
           <Stack.Screen
             name="Reader"
             component={ReaderScreen}
-            options={{ headerBackTitle: 'Back', title: '' }}
+            options={{
+              headerShown: false,
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
