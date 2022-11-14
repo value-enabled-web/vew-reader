@@ -19,14 +19,11 @@ const styles = theme =>
     articleContainer: {
       backgroundColor: theme.colors.backgroundHighlighted,
       padding: theme.spacing.m,
-      borderRadius: 8,
-      shadowColor: 'black',
-      shadowOffset: {
-        width: 2,
-        height: 2,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 3,
+      borderRadius: theme.cornerRadius,
+      shadowColor: theme.dropShadow.color,
+      shadowOffset: theme.dropShadow.offset,
+      shadowOpacity: theme.dropShadow.opacity,
+      shadowRadius: theme.dropShadow.radius,
     },
     articleTitle: {
       fontFamily: theme.text.headline.family,
@@ -58,14 +55,15 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={themedStyles.background}>
       <View style={themedStyles.container}>
-        <Pressable
-          style={themedStyles.articleContainer}
-          onPress={() => {
-            navigation.navigate('Reader', { url: article.url })
-          }}>
-          <Text style={themedStyles.articleTitle}>{article.title}</Text>
-          <Text style={themedStyles.articleUrl}>{article.url}</Text>
-        </Pressable>
+        <View style={themedStyles.articleContainer}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Reader', { url: article.url })
+            }}>
+            <Text style={themedStyles.articleTitle}>{article.title}</Text>
+            <Text style={themedStyles.articleUrl}>{article.url}</Text>
+          </Pressable>
+        </View>
         <View style={themedStyles.bottom}>
           <BigButton
             title="Read"

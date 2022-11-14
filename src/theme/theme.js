@@ -13,6 +13,7 @@ export const lightTheme = {
   colors: {
     background: palette.almostWhite,
     foreground: palette.almostBlack,
+    backgroundHighlighted: palette.white,
     readerBackground: palette.white,
     readerForeground: palette.almostBlack,
     gray: palette.gray,
@@ -22,6 +23,16 @@ export const lightTheme = {
     m: 16,
     l: 24,
     xl: 40,
+  },
+  cornerRadius: 8,
+  dropShadow: {
+    color: palette.almostBlack,
+    offset: {
+      width: 2,
+      height: 2,
+    },
+    opacity: 0.2,
+    radius: 3,
   },
   fonts: {
     monospaced: {
@@ -80,8 +91,14 @@ export const darkTheme = {
     ...lightTheme.colors,
     background: palette.almostBlack,
     foreground: palette.almostWhite,
+    backgroundHighlighted: palette.black,
     readerBackground: palette.almostBlack,
     readerForeground: palette.almostWhite,
+  },
+  dropShadow: {
+    ...lightTheme.dropShadow,
+    color: palette.black,
+    opacity: 0.6,
   },
 }
 

@@ -1,4 +1,5 @@
 {
   "name": "VATReaderPrototype",
-  "displayName": "VATReaderPrototype"
+  "displayName": "VATReaderPrototype",
+  "vatApiUrl": "http://192.168.178.68:3000"
 }

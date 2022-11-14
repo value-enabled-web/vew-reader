@@ -16,6 +16,7 @@ import RenderHtml, {
   defaultSystemFonts,
 } from 'react-native-render-html'
 
+import { vatApiUrl } from '../../app.json'
 import { useThemed } from '../hooks/useThemed'
 import { useTheme } from '../theme/theme'
 
@@ -84,7 +85,7 @@ const ReaderScreen = ({ route, navigation }) => {
       setError(null)
 
       const encodedUrl = encodeURIComponent(url)
-      const fetchUrl = `http://192.168.178.68:3000/upcycle?url=${encodedUrl}`
+      const fetchUrl = `${vatApiUrl}/upcycle?url=${encodedUrl}`
 
       try {
         const response = await fetch(fetchUrl)
@@ -187,7 +188,7 @@ const ReaderScreen = ({ route, navigation }) => {
       </ScrollView>
       <View style={themedStyles.bottomBar}>
         <Button
-          title="🏠"
+          title="🔙"
           color={theme.colors.foreground}
           onPress={() => navigation.goBack()}
         />
