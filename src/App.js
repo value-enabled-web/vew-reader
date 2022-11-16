@@ -21,7 +21,7 @@ const App = () => {
             name="Home"
             component={HomeScreen}
             options={{
-              title: '📚 VAT Prototype',
+              title: '📖 Monocle',
               headerTintColor: theme.colors.foreground,
               headerShadowVisible: false,
               headerStyle: {
