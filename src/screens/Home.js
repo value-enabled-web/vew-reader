@@ -1,7 +1,15 @@
-import React from 'react'
-import { SafeAreaView, Text, View, StyleSheet, Pressable } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import {
+  AppState,
+  SafeAreaView,
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+} from 'react-native'
 
-import BigButton from '../components/BigButton'
+import Clipboard from '@react-native-clipboard/clipboard'
+
 import { useThemed } from '../hooks/useThemed'
 
 const styles = theme =>
@@ -24,6 +32,7 @@ const styles = theme =>
       shadowOffset: theme.dropShadow.offset,
       shadowOpacity: theme.dropShadow.opacity,
       shadowRadius: theme.dropShadow.radius,
+      marginBottom: theme.spacing.m,
     },
     articleTitle: {
       fontFamily: theme.text.headline.family,
@@ -32,11 +41,20 @@ const styles = theme =>
       color: theme.colors.foreground,
       marginBottom: 2,
     },
-    articleUrl: {
-      fontFamily: theme.fonts.monospaced.family,
+    articleSubtitle: {
+      fontFamily: theme.text.footnote.family,
       fontWeight: theme.text.footnote.weight,
       fontSize: theme.text.footnote.size,
       color: theme.colors.foreground,
+    },
+    clipbardArticleTitle: {
+      color: theme.colors.gray2,
+    },
+    clipboardUrl: {
+      fontFamily: theme.text.footnoteMono.family,
+      fontWeight: theme.text.footnoteMono.weight,
+      fontSize: theme.text.footnoteMono.size,
+      color: theme.colors.gray3,
     },
     bottom: {
       flex: 1,
@@ -46,30 +64,89 @@ const styles = theme =>
 
 const HomeScreen = ({ navigation }) => {
   const themedStyles = useThemed(styles)
+  const [clipboardUrl, setClipboardUrl] = useState(null)
 
-  const article = {
-    title: 'Bitcoin is Time',
-    url: 'https://dergigi.com/2021/01/14/bitcoin-is-time/',
-  }
+  const appState = useRef(AppState.currentState)
+
+  useEffect(() => {
+    async function checkForUrlInClipboard() {
+      const text = await Clipboard.getString()
+
+      try {
+        const url = new URL(text)
+        setClipboardUrl(url.href)
+      } catch {
+        setClipboardUrl(null)
+      }
+    }
+
+    const subscription = AppState.addEventListener(
+      'change',
+      async nextAppState => {
+        if (
+          appState.current.match(/inactive|background/) &&
+          nextAppState === 'active'
+        ) {
+          checkForUrlInClipboard()
+        }
+
+        appState.current = nextAppState
+      },
+    )
+
+    checkForUrlInClipboard()
+
+    return () => {
+      subscription.remove()
+    }
+  }, [])
+
+  const articles = [
+    {
+      title: 'Bitcoin is Time',
+      subtitle: 'dergigi.com',
+      url: 'https://dergigi.com/2021/01/14/bitcoin-is-time/',
+    },
+    {
+      title: 'Shareholder Letter',
+      subtitle: 'seetee.io',
+      url: 'https://www.seetee.io/blog/2021-03-08-shareholder-letter/',
+    },
+  ]
 
   return (
     <SafeAreaView style={themedStyles.background}>
       <View style={themedStyles.container}>
-        <View style={themedStyles.articleContainer}>
-          <Pressable
-            onPress={() => {
-              navigation.navigate('Reader', { url: article.url })
-            }}>
-            <Text style={themedStyles.articleTitle}>{article.title}</Text>
-            <Text style={themedStyles.articleUrl}>{article.url}</Text>
-          </Pressable>
-        </View>
-        <View style={themedStyles.bottom}>
-          <BigButton
-            title="Read"
-            onPress={() => navigation.navigate('Reader', { url: article.url })}
-          />
-        </View>
+        {articles.map((article, index) => (
+          <View key={index} style={themedStyles.articleContainer}>
+            <Pressable
+              onPress={() => {
+                navigation.navigate('Reader', { url: article.url })
+              }}>
+              <Text style={themedStyles.articleTitle}>{article.title}</Text>
+              <Text style={themedStyles.articleSubtitle}>
+                {article.subtitle}
+              </Text>
+            </Pressable>
+          </View>
+        ))}
+        {clipboardUrl && (
+          <View style={themedStyles.articleContainer}>
+            <Pressable
+              onPress={() => {
+                navigation.navigate('Reader', { url: clipboardUrl })
+              }}>
+              <Text
+                style={[
+                  themedStyles.articleTitle,
+                  themedStyles.clipbardArticleTitle,
+                ]}>
+                Suggested from Clipboard
+              </Text>
+              <Text style={themedStyles.clipboardUrl}>{clipboardUrl}</Text>
+            </Pressable>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   )
