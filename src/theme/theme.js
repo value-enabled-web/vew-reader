@@ -73,7 +73,14 @@ export const lightTheme = {
       weight: '400',
     },
     reader: {
-      family: 'Times New Roman',
+      ...Platform.select({
+        ios: {
+          family: 'NewYork-Regular',
+        },
+        android: {
+          family: 'RobotoSerif',
+        },
+      }),
       size: 20,
       weight: '400',
     },

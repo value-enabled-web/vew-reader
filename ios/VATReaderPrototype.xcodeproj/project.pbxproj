@@ -12,6 +12,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		65A382BD29251A6C00BF949C /* NewYork-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65A382BB29251A6C00BF949C /* NewYork-RegularItalic.ttf */; };
+		65A382BE29251A6C00BF949C /* NewYork-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65A382BC29251A6C00BF949C /* NewYork-Regular.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-VATReaderPrototype-VATReaderPrototypeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-VATReaderPrototype-VATReaderPrototypeTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -41,6 +43,8 @@
 		5709B34CF0A7D63546082F79 /* Pods-VATReaderPrototype.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VATReaderPrototype.release.xcconfig"; path = "Target Support Files/Pods-VATReaderPrototype/Pods-VATReaderPrototype.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-VATReaderPrototype-VATReaderPrototypeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VATReaderPrototype-VATReaderPrototypeTests.debug.xcconfig"; path = "Target Support Files/Pods-VATReaderPrototype-VATReaderPrototypeTests/Pods-VATReaderPrototype-VATReaderPrototypeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-VATReaderPrototype.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VATReaderPrototype.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		65A382BB29251A6C00BF949C /* NewYork-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewYork-RegularItalic.ttf"; sourceTree = "<group>"; };
+		65A382BC29251A6C00BF949C /* NewYork-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NewYork-Regular.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = VATReaderPrototype/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-VATReaderPrototype-VATReaderPrototypeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VATReaderPrototype-VATReaderPrototypeTests.release.xcconfig"; path = "Target Support Files/Pods-VATReaderPrototype-VATReaderPrototypeTests/Pods-VATReaderPrototype-VATReaderPrototypeTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -106,6 +110,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		65A382B6292519F100BF949C /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				65A382BC29251A6C00BF949C /* NewYork-Regular.ttf */,
+				65A382BB29251A6C00BF949C /* NewYork-RegularItalic.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +129,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				65A382B6292519F100BF949C /* fonts */,
 				13B07FAE1A68108700A75B9A /* VATReaderPrototype */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* VATReaderPrototypeTests */,
@@ -242,7 +256,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65A382BE29251A6C00BF949C /* NewYork-Regular.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				65A382BD29251A6C00BF949C /* NewYork-RegularItalic.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
