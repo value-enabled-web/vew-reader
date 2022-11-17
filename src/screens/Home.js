@@ -2,14 +2,20 @@ import React, { useEffect, useState, useRef } from 'react'
 import {
   AppState,
   SafeAreaView,
+  ScrollView,
   Text,
   View,
   StyleSheet,
   Pressable,
+  Platform,
 } from 'react-native'
 
 import Clipboard from '@react-native-clipboard/clipboard'
 
+import {
+  hardcodedArticles as articles,
+  enableClipboardSuggestions,
+} from '../../app.json'
 import { useThemed } from '../hooks/useThemed'
 
 const styles = theme =>
@@ -18,11 +24,20 @@ const styles = theme =>
       flex: 1,
       backgroundColor: theme.colors.background,
     },
-    container: {
+    scrollView: {
       flex: 1,
-      alignItems: 'stretch',
-      marginHorizontal: theme.spacing.m,
-      marginVertical: theme.spacing.m,
+    },
+    scrollViewContentContainer: {
+      flexGrow: 1,
+      justifyContent: 'space-between',
+      padding: theme.spacing.m,
+    },
+    heading: {
+      fontFamily: theme.text.title2.family,
+      fontWeight: theme.text.title2.weight,
+      fontSize: theme.text.title2.size,
+      color: theme.colors.foreground,
+      marginBottom: theme.spacing.m,
     },
     articleContainer: {
       backgroundColor: theme.colors.backgroundHighlighted,
@@ -32,6 +47,7 @@ const styles = theme =>
       shadowOffset: theme.dropShadow.offset,
       shadowOpacity: theme.dropShadow.opacity,
       shadowRadius: theme.dropShadow.radius,
+      elevation: 1,
       marginBottom: theme.spacing.m,
     },
     articleTitle: {
@@ -48,28 +64,43 @@ const styles = theme =>
       color: theme.colors.foreground,
     },
     clipbardArticleTitle: {
-      color: theme.colors.gray2,
+      color: theme.colors.foreground,
+      marginBottom: theme.spacing.s,
     },
     clipboardUrl: {
       fontFamily: theme.text.footnoteMono.family,
       fontWeight: theme.text.footnoteMono.weight,
       fontSize: theme.text.footnoteMono.size,
-      color: theme.colors.gray3,
+      color: theme.colors.foreground,
     },
-    bottom: {
-      flex: 1,
-      justifyContent: 'flex-end',
-    },
+    savedArticlesContainer: {},
+    clipbardSuggestionContainer: {},
   })
 
 const HomeScreen = ({ navigation }) => {
   const themedStyles = useThemed(styles)
-  const [clipboardUrl, setClipboardUrl] = useState(null)
+  const [clipboardUrl, setClipboardUrl] = useState(
+    'https://dergigi.com/2021/01/14/bitcoin-is-time/',
+  )
 
   const appState = useRef(AppState.currentState)
 
   useEffect(() => {
+    if (!enableClipboardSuggestions) {
+      setClipboardUrl(null)
+      return
+    }
+
     async function checkForUrlInClipboard() {
+      const hasString = await Clipboard.hasString()
+      const probablyHasWebURL =
+        Platform.OS === 'ios' ? await Clipboard.hasWebURL() : true
+
+      if (!hasString || !probablyHasWebURL) {
+        setClipboardUrl(null)
+        return
+      }
+
       const text = await Clipboard.getString()
 
       try {
@@ -87,7 +118,7 @@ const HomeScreen = ({ navigation }) => {
           appState.current.match(/inactive|background/) &&
           nextAppState === 'active'
         ) {
-          checkForUrlInClipboard()
+          await checkForUrlInClipboard()
         }
 
         appState.current = nextAppState
@@ -101,53 +132,43 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [])
 
-  const articles = [
-    {
-      title: 'Bitcoin is Time',
-      subtitle: 'dergigi.com',
-      url: 'https://dergigi.com/2021/01/14/bitcoin-is-time/',
-    },
-    {
-      title: 'Shareholder Letter',
-      subtitle: 'seetee.io',
-      url: 'https://www.seetee.io/blog/2021-03-08-shareholder-letter/',
-    },
-  ]
-
   return (
     <SafeAreaView style={themedStyles.background}>
-      <View style={themedStyles.container}>
-        {articles.map((article, index) => (
-          <View key={index} style={themedStyles.articleContainer}>
-            <Pressable
-              onPress={() => {
-                navigation.navigate('Reader', { url: article.url })
-              }}>
-              <Text style={themedStyles.articleTitle}>{article.title}</Text>
-              <Text style={themedStyles.articleSubtitle}>
-                {article.subtitle}
-              </Text>
-            </Pressable>
-          </View>
-        ))}
-        {clipboardUrl && (
-          <View style={themedStyles.articleContainer}>
-            <Pressable
-              onPress={() => {
-                navigation.navigate('Reader', { url: clipboardUrl })
-              }}>
-              <Text
-                style={[
-                  themedStyles.articleTitle,
-                  themedStyles.clipbardArticleTitle,
-                ]}>
-                Suggested from Clipboard
-              </Text>
-              <Text style={themedStyles.clipboardUrl}>{clipboardUrl}</Text>
-            </Pressable>
-          </View>
-        )}
-      </View>
+      <ScrollView
+        style={themedStyles.scrollView}
+        contentContainerStyle={themedStyles.scrollViewContentContainer}>
+        <View style={themedStyles.savedArticlesContainer}>
+          <Text style={themedStyles.heading}>📥 Articles</Text>
+          {articles.map((article, index) => (
+            <View key={index} style={themedStyles.articleContainer}>
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('Reader', { url: article.url })
+                }}>
+                <Text style={themedStyles.articleTitle}>{article.title}</Text>
+                <Text style={themedStyles.articleSubtitle}>
+                  {article.subtitle}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+        <View style={themedStyles.clipbardSuggestionContainer}>
+          {enableClipboardSuggestions && clipboardUrl && (
+            <View>
+              <Text style={themedStyles.heading}>📋 Clipboard</Text>
+              <View style={themedStyles.articleContainer}>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate('Reader', { url: clipboardUrl })
+                  }}>
+                  <Text style={themedStyles.clipboardUrl}>{clipboardUrl}</Text>
+                </Pressable>
+              </View>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

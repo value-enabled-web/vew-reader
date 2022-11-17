@@ -1,4 +1,17 @@
 {
   "name": "VATReaderPrototype",
   "displayName": "VATReaderPrototype",
+  "enableClipboardSuggestions": true,
+  "hardcodedArticles": [
+      {
+        "title": "Bitcoin is Time",
+        "subtitle": "dergigi.com",
+        "url": "https://dergigi.com/2021/01/14/bitcoin-is-time/"
+      },
+      {
+        "title": "Shareholder Letter",
+        "subtitle": "seetee.io",
+        "url": "https://www.seetee.io/blog/2021-03-08-shareholder-letter/"
+      }
+    ]
 }
