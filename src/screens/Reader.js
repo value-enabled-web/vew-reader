@@ -10,13 +10,13 @@ import {
   useWindowDimensions,
 } from 'react-native'
 
+import Config from 'react-native-config'
 import RenderHtml, {
   HTMLElementModel,
   HTMLContentModel,
   defaultSystemFonts,
 } from 'react-native-render-html'
 
-import { vatApiUrl } from '../../app.json'
 import { useThemed } from '../hooks/useThemed'
 import { useTheme } from '../theme/theme'
 
@@ -85,7 +85,7 @@ const ReaderScreen = ({ route, navigation }) => {
       setError(null)
 
       const encodedUrl = encodeURIComponent(url)
-      const fetchUrl = `${vatApiUrl}/upcycle?url=${encodedUrl}`
+      const fetchUrl = `${Config.VAT_API_URL}/upcycle?url=${encodedUrl}`
 
       try {
         const response = await fetch(fetchUrl)
