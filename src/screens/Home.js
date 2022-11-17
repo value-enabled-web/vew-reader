@@ -79,9 +79,7 @@ const styles = theme =>
 
 const HomeScreen = ({ navigation }) => {
   const themedStyles = useThemed(styles)
-  const [clipboardUrl, setClipboardUrl] = useState(
-    'https://dergigi.com/2021/01/14/bitcoin-is-time/',
-  )
+  const [clipboardUrl, setClipboardUrl] = useState(null)
 
   const appState = useRef(AppState.currentState)
 
@@ -92,11 +90,10 @@ const HomeScreen = ({ navigation }) => {
     }
 
     async function checkForUrlInClipboard() {
-      const hasString = await Clipboard.hasString()
       const probablyHasWebURL =
         Platform.OS === 'ios' ? await Clipboard.hasWebURL() : true
 
-      if (!hasString || !probablyHasWebURL) {
+      if (!probablyHasWebURL) {
         setClipboardUrl(null)
         return
       }
