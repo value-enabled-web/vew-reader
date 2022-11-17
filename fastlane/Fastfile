@@ -1,0 +1,10 @@
+update_fastlane
+
+platform :ios do
+  lane :appicons do
+    appicon(
+        appicon_devices: [:iphone],
+        appicon_path: "./ios/VATReaderPrototype/Images.xcassets"
+    )
+  end
+end
