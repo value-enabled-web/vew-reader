@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   Text,
   StyleSheet,
-  Pressable,
   useWindowDimensions,
 } from 'react-native'
 
@@ -24,137 +23,9 @@ import RenderHtml, {
 } from 'react-native-render-html'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
+import Pressable from '../components/Pressable'
 import { useThemed } from '../hooks/useThemed'
 import { useTheme } from '../theme/theme'
-
-const styles = theme =>
-  StyleSheet.create({
-    background: {
-      flex: 1,
-      backgroundColor: theme.colors.readerBackground,
-    },
-    centeredContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    textContainer: {
-      flex: 1,
-      paddingHorizontal: theme.spacing.m,
-      zIndex: 0,
-      elevation: 0,
-    },
-    errorMessage: {
-      fontFamily: theme.text.headline.family,
-      fontSize: theme.text.headline.size,
-      fontWeight: theme.text.headline.weight,
-      color: theme.colors.foreground,
-    },
-    title: {
-      fontFamily: theme.text.title1.family,
-      fontSize: theme.text.title1.size,
-      fontWeight: theme.text.title1.weight,
-      marginTop: theme.spacing.l,
-      color: theme.colors.readerForeground,
-    },
-    subtitle: {
-      fontFamily: theme.text.headline.family,
-      fontSize: theme.text.headline.size,
-      fontWeight: theme.text.headline.weight,
-      color: theme.colors.gray,
-      marginBottom: theme.spacing.m,
-    },
-    article: {
-      paddingBottom: theme.spacing.m,
-    },
-    actionBar: {
-      zIndex: 1,
-      elevation: 1,
-      position: 'absolute',
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      backgroundColor: theme.colors.backgroundHighlighted,
-      paddingVertical: theme.spacing.s,
-      paddingHorizontal: theme.spacing.m,
-      borderRadius: theme.cornerRadius * 3,
-      bottom: theme.spacing.m,
-      alignSelf: 'center',
-      shadowColor: theme.colors.foreground,
-      shadowOffset: {
-        width: 1,
-        height: 1,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 5,
-      width: '40%',
-    },
-    actionBarItem: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    actionBarIcon: {
-      fontSize: 23,
-      color: theme.colors.foreground,
-    },
-    actionBarText: {
-      fontFamily: theme.text.body.family,
-      fontSize: 14,
-      fontWeight: theme.text.body.weight,
-      color: theme.colors.foreground,
-      marginLeft: 5,
-    },
-    actionBarDivider: {
-      borderLeftColor: theme.colors.gray3,
-      borderLeftWidth: 1,
-      height: '80%',
-    },
-  })
-
-const readerStyles = theme => ({
-  h2: {
-    fontFamily: theme.text.title2.family,
-    fontSize: theme.text.title2.size,
-    fontWeight: theme.text.title2.weight,
-  },
-  h3: {
-    fontFamily: theme.text.title3.family,
-    fontSize: theme.text.title3.size,
-    fontWeight: theme.text.title3.weight,
-  },
-  p: {
-    fontFamily: theme.text.reader.family,
-    fontSize: theme.text.reader.size,
-    fontWeight: theme.text.reader.weight,
-    lineHeight: theme.text.reader.size * 1.3,
-  },
-  ul: {
-    fontFamily: theme.text.reader.family,
-    fontSize: theme.text.reader.size,
-    fontWeight: theme.text.reader.weight,
-    lineHeight: theme.text.reader.size * 1.3,
-  },
-  ol: {
-    fontFamily: theme.text.reader.family,
-    fontSize: theme.text.reader.size,
-    fontWeight: theme.text.reader.weight,
-    lineHeight: theme.text.reader.size * 1.3,
-  },
-  table: {
-    fontFamily: theme.text.reader.family,
-    fontSize: theme.text.reader.size,
-    fontWeight: theme.text.reader.weight,
-    lineHeight: theme.text.reader.size * 1.3,
-  },
-  blockquote: {
-    fontStyle: 'italic',
-    lineHeight: theme.text.reader.size,
-  },
-  a: {
-    textDecorationColor: theme.colors.readerForeground,
-    fontStyle: 'italic',
-    color: theme.colors.readerForeground,
-  },
-})
 
 const customHTMLElementModels = {
   center: HTMLElementModel.fromCustomModel({
@@ -178,6 +49,22 @@ const ReaderScreen = ({ route, navigation }) => {
   const lastContentOffset = useSharedValue(0)
   const isScrolling = useSharedValue(false)
   const translateActionBarY = useSharedValue(0)
+
+  const clapAnimationTextOffset = useSharedValue(0)
+  const clapAnimationTextOpacity = useSharedValue(1)
+  const clapAnimationDuration = 350
+  const clapAnimationOffset = 250
+
+  const clapTextAnimationStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: -clapAnimationTextOffset.value,
+        },
+      ],
+      opacity: clapAnimationTextOpacity.value,
+    }
+  })
 
   useEffect(() => {
     async function fetchArticle() {
@@ -288,23 +175,171 @@ const ReaderScreen = ({ route, navigation }) => {
       <View>
         <Animated.View style={[themedStyles.actionBar, actionBarAnimation]}>
           <Pressable
+            activeOpacity={0.5}
             style={themedStyles.actionBarItem}
             onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back-ios" style={themedStyles.actionBarIcon} />
+            <Icon name="arrow-back" style={themedStyles.actionBarIcon} />
           </Pressable>
-          <View style={themedStyles.actionBarItem}>
-            <View style={themedStyles.actionBarDivider} />
-          </View>
+          <View style={themedStyles.actionBarDivider} />
           <Pressable
+            activeOpacity={0.5}
             style={themedStyles.actionBarItem}
-            onPress={() => console.log('CLAP')}>
-            <Icon name="favorite" style={themedStyles.actionBarIcon} />
-            <Text style={themedStyles.actionBarText}>1k</Text>
+            onPress={() => {
+              clapAnimationTextOffset.value = 0
+              clapAnimationTextOpacity.value = 1
+              clapAnimationTextOffset.value = withTiming(clapAnimationOffset, {
+                duration: clapAnimationDuration,
+              })
+              clapAnimationTextOpacity.value = withTiming(0, {
+                duration: clapAnimationDuration,
+              })
+            }}>
+            <Icon name={'favorite-border'} style={themedStyles.actionBarIcon} />
+            <View>
+              <Animated.View
+                style={[
+                  StyleSheet.absoluteFillObject,
+                  clapTextAnimationStyles,
+                ]}>
+                <Text style={themedStyles.actionBarText}>1k</Text>
+              </Animated.View>
+              <Text style={themedStyles.actionBarText}>1k</Text>
+            </View>
           </Pressable>
         </Animated.View>
       </View>
     </SafeAreaView>
   )
 }
+
+const styles = theme =>
+  StyleSheet.create({
+    background: {
+      flex: 1,
+      backgroundColor: theme.colors.readerBackground,
+    },
+    centeredContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    textContainer: {
+      flex: 1,
+      paddingHorizontal: theme.spacing.m,
+      zIndex: 0,
+      elevation: 0,
+    },
+    errorMessage: {
+      fontFamily: theme.text.headline.family,
+      fontSize: theme.text.headline.size,
+      fontWeight: theme.text.headline.weight,
+      color: theme.colors.foreground,
+    },
+    title: {
+      fontFamily: theme.text.title1.family,
+      fontSize: theme.text.title1.size,
+      fontWeight: theme.text.title1.weight,
+      marginTop: theme.spacing.l,
+      color: theme.colors.readerForeground,
+    },
+    subtitle: {
+      fontFamily: theme.text.headline.family,
+      fontSize: theme.text.headline.size,
+      fontWeight: theme.text.headline.weight,
+      color: theme.colors.gray,
+      marginBottom: theme.spacing.m,
+    },
+    article: {
+      paddingBottom: theme.spacing.m,
+    },
+    actionBar: {
+      zIndex: 1,
+      elevation: 1,
+      position: 'absolute',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      backgroundColor: theme.colors.backgroundHighlighted,
+      borderRadius: theme.cornerRadius * 3,
+      bottom: theme.spacing.m,
+      alignSelf: 'center',
+      shadowColor: theme.colors.foreground,
+      shadowOffset: {
+        width: 1,
+        height: 1,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+    },
+    actionBarItem: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: theme.spacing.s,
+      paddingHorizontal: theme.spacing.m,
+    },
+    actionBarIcon: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      fontSize: 25,
+      color: theme.colors.foreground,
+    },
+    actionBarText: {
+      fontFamily: theme.text.body.family,
+      fontSize: 15,
+      fontWeight: theme.text.body.weight,
+      color: theme.colors.foreground,
+      marginLeft: 5,
+    },
+    actionBarDivider: {
+      borderLeftColor: theme.colors.gray3,
+      borderLeftWidth: 1,
+      marginVertical: theme.spacing.s,
+    },
+  })
+
+const readerStyles = theme => ({
+  h2: {
+    fontFamily: theme.text.title2.family,
+    fontSize: theme.text.title2.size,
+    fontWeight: theme.text.title2.weight,
+  },
+  h3: {
+    fontFamily: theme.text.title3.family,
+    fontSize: theme.text.title3.size,
+    fontWeight: theme.text.title3.weight,
+  },
+  p: {
+    fontFamily: theme.text.reader.family,
+    fontSize: theme.text.reader.size,
+    fontWeight: theme.text.reader.weight,
+    lineHeight: theme.text.reader.size * 1.3,
+  },
+  ul: {
+    fontFamily: theme.text.reader.family,
+    fontSize: theme.text.reader.size,
+    fontWeight: theme.text.reader.weight,
+    lineHeight: theme.text.reader.size * 1.3,
+  },
+  ol: {
+    fontFamily: theme.text.reader.family,
+    fontSize: theme.text.reader.size,
+    fontWeight: theme.text.reader.weight,
+    lineHeight: theme.text.reader.size * 1.3,
+  },
+  table: {
+    fontFamily: theme.text.reader.family,
+    fontSize: theme.text.reader.size,
+    fontWeight: theme.text.reader.weight,
+    lineHeight: theme.text.reader.size * 1.3,
+  },
+  blockquote: {
+    fontStyle: 'italic',
+    lineHeight: theme.text.reader.size,
+  },
+  a: {
+    textDecorationColor: theme.colors.readerForeground,
+    fontStyle: 'italic',
+    color: theme.colors.readerForeground,
+  },
+})
 
 export default ReaderScreen
