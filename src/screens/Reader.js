@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import {
   SafeAreaView,
   View,
-  ScrollView,
   ActivityIndicator,
   Text,
   StyleSheet,
@@ -11,6 +10,13 @@ import {
 } from 'react-native'
 
 import Config from 'react-native-config'
+import Animated, {
+  Easing,
+  useSharedValue,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated'
 import RenderHtml, {
   HTMLElementModel,
   HTMLContentModel,
@@ -34,6 +40,14 @@ const styles = theme =>
     textContainer: {
       flex: 1,
       paddingHorizontal: theme.spacing.m,
+      zIndex: 0,
+      elevation: 0,
+    },
+    errorMessage: {
+      fontFamily: theme.text.headline.family,
+      fontSize: theme.text.headline.size,
+      fontWeight: theme.text.headline.weight,
+      color: theme.colors.foreground,
     },
     title: {
       fontFamily: theme.text.title1.family,
@@ -52,19 +66,95 @@ const styles = theme =>
     article: {
       paddingBottom: theme.spacing.m,
     },
-    bottomBar: {
+    actionBar: {
+      zIndex: 1,
+      elevation: 1,
+      position: 'absolute',
       flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingHorizontal: theme.spacing.l,
-      paddingVertical: 10,
-      borderTopWidth: 0.5,
-      borderTopColor: theme.colors.gray3,
+      justifyContent: 'space-around',
+      backgroundColor: theme.colors.backgroundHighlighted,
+      paddingVertical: theme.spacing.s,
+      paddingHorizontal: theme.spacing.m,
+      borderRadius: theme.cornerRadius * 3,
+      bottom: theme.spacing.m,
+      alignSelf: 'center',
+      shadowColor: theme.colors.foreground,
+      shadowOffset: {
+        width: 1,
+        height: 1,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+      width: '40%',
     },
-    bottomBarChevronBack: {
+    actionBarItem: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    actionBarIcon: {
+      fontSize: 23,
       color: theme.colors.foreground,
-      fontSize: 22,
+    },
+    actionBarText: {
+      fontFamily: theme.text.body.family,
+      fontSize: 14,
+      fontWeight: theme.text.body.weight,
+      color: theme.colors.foreground,
+      marginLeft: 5,
+    },
+    actionBarDivider: {
+      borderLeftColor: theme.colors.gray3,
+      borderLeftWidth: 1,
+      height: '80%',
     },
   })
+
+const readerStyles = theme => ({
+  h2: {
+    fontFamily: theme.text.title2.family,
+    fontSize: theme.text.title2.size,
+    fontWeight: theme.text.title2.weight,
+  },
+  h3: {
+    fontFamily: theme.text.title3.family,
+    fontSize: theme.text.title3.size,
+    fontWeight: theme.text.title3.weight,
+  },
+  p: {
+    fontFamily: theme.text.reader.family,
+    fontSize: theme.text.reader.size,
+    fontWeight: theme.text.reader.weight,
+    lineHeight: theme.text.reader.size * 1.3,
+  },
+  ul: {
+    fontFamily: theme.text.reader.family,
+    fontSize: theme.text.reader.size,
+    fontWeight: theme.text.reader.weight,
+    lineHeight: theme.text.reader.size * 1.3,
+  },
+  ol: {
+    fontFamily: theme.text.reader.family,
+    fontSize: theme.text.reader.size,
+    fontWeight: theme.text.reader.weight,
+    lineHeight: theme.text.reader.size * 1.3,
+  },
+  table: {
+    fontFamily: theme.text.reader.family,
+    fontSize: theme.text.reader.size,
+    fontWeight: theme.text.reader.weight,
+    lineHeight: theme.text.reader.size * 1.3,
+  },
+  blockquote: {
+    fontStyle: 'italic',
+    lineHeight: theme.text.reader.size,
+  },
+  a: {
+    textDecorationColor: theme.colors.readerForeground,
+    fontStyle: 'italic',
+    color: theme.colors.readerForeground,
+  },
+})
 
 const customHTMLElementModels = {
   center: HTMLElementModel.fromCustomModel({
@@ -78,11 +168,16 @@ const ReaderScreen = ({ route, navigation }) => {
 
   const theme = useTheme()
   const themedStyles = useThemed(styles)
+  const themedReaderStyles = useThemed(readerStyles)
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [article, setArticle] = useState(null)
   const { width } = useWindowDimensions()
+
+  const lastContentOffset = useSharedValue(0)
+  const isScrolling = useSharedValue(false)
+  const translateActionBarY = useSharedValue(0)
 
   useEffect(() => {
     async function fetchArticle() {
@@ -108,11 +203,51 @@ const ReaderScreen = ({ route, navigation }) => {
     fetchArticle()
   }, [url, navigation])
 
+  const actionBarAnimation = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: withTiming(translateActionBarY.value, {
+            duration: 300,
+            easing: Easing.inOut(Easing.ease),
+          }),
+        },
+      ],
+    }
+  })
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: event => {
+      if (
+        lastContentOffset.value > event.contentOffset.y &&
+        isScrolling.value
+      ) {
+        // scrolling up
+        translateActionBarY.value = 0
+      } else if (
+        lastContentOffset.value < event.contentOffset.y &&
+        isScrolling.value
+      ) {
+        // scrolling down
+        translateActionBarY.value = 100
+      }
+      lastContentOffset.value = event.contentOffset.y
+    },
+    onBeginDrag: e => {
+      isScrolling.value = true
+    },
+    onEndDrag: e => {
+      isScrolling.value = false
+    },
+  })
+
   if (error) {
     return (
       <SafeAreaView
         style={[themedStyles.background, themedStyles.centeredContainer]}>
-        <Text>💔 Failed to load article.</Text>
+        <Text style={themedStyles.errorMessage}>
+          💔 Failed to load article.
+        </Text>
       </SafeAreaView>
     )
   }
@@ -128,7 +263,10 @@ const ReaderScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={[themedStyles.background]}>
-      <ScrollView style={[themedStyles.textContainer]}>
+      <Animated.ScrollView
+        scrollEventThrottle={64}
+        style={[themedStyles.textContainer]}
+        onScroll={scrollHandler}>
         <Text style={[themedStyles.title]}>{article._data.title}</Text>
         <Text style={[themedStyles.subtitle]}>{article._data.hostname}</Text>
         <View style={[themedStyles.article]}>
@@ -142,62 +280,28 @@ const ReaderScreen = ({ route, navigation }) => {
               'System',
               theme.text.reader.family,
             ]}
-            tagsStyles={{
-              h2: {
-                fontFamily: theme.text.title2.family,
-                fontSize: theme.text.title2.size,
-                fontWeight: theme.text.title2.weight,
-              },
-              h3: {
-                fontFamily: theme.text.title3.family,
-                fontSize: theme.text.title3.size,
-                fontWeight: theme.text.title3.weight,
-              },
-              p: {
-                fontFamily: theme.text.reader.family,
-                fontSize: theme.text.reader.size,
-                fontWeight: theme.text.reader.weight,
-                lineHeight: theme.text.reader.size * 1.3,
-              },
-              ul: {
-                fontFamily: theme.text.reader.family,
-                fontSize: theme.text.reader.size,
-                fontWeight: theme.text.reader.weight,
-                lineHeight: theme.text.reader.size * 1.3,
-              },
-              ol: {
-                fontFamily: theme.text.reader.family,
-                fontSize: theme.text.reader.size,
-                fontWeight: theme.text.reader.weight,
-                lineHeight: theme.text.reader.size * 1.3,
-              },
-              table: {
-                fontFamily: theme.text.reader.family,
-                fontSize: theme.text.reader.size,
-                fontWeight: theme.text.reader.weight,
-                lineHeight: theme.text.reader.size * 1.3,
-              },
-              blockquote: {
-                fontStyle: 'italic',
-                lineHeight: theme.text.reader.size,
-              },
-              a: {
-                textDecorationColor: theme.colors.readerForeground,
-                fontStyle: 'italic',
-                color: theme.colors.readerForeground,
-              },
-            }}
+            tagsStyles={themedReaderStyles}
             classesStyles={{ page: { color: theme.colors.readerForeground } }}
           />
         </View>
-      </ScrollView>
-      <View style={themedStyles.bottomBar}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Icon
-            name="arrow-back-ios"
-            style={themedStyles.bottomBarChevronBack}
-          />
-        </Pressable>
+      </Animated.ScrollView>
+      <View>
+        <Animated.View style={[themedStyles.actionBar, actionBarAnimation]}>
+          <Pressable
+            style={themedStyles.actionBarItem}
+            onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back-ios" style={themedStyles.actionBarIcon} />
+          </Pressable>
+          <View style={themedStyles.actionBarItem}>
+            <View style={themedStyles.actionBarDivider} />
+          </View>
+          <Pressable
+            style={themedStyles.actionBarItem}
+            onPress={() => console.log('CLAP')}>
+            <Icon name="favorite" style={themedStyles.actionBarIcon} />
+            <Text style={themedStyles.actionBarText}>1k</Text>
+          </Pressable>
+        </Animated.View>
       </View>
     </SafeAreaView>
   )
