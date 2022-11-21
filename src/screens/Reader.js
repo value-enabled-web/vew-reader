@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   Text,
   StyleSheet,
-  Button,
+  Pressable,
   useWindowDimensions,
 } from 'react-native'
 
@@ -16,6 +16,7 @@ import RenderHtml, {
   HTMLContentModel,
   defaultSystemFonts,
 } from 'react-native-render-html'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import { useThemed } from '../hooks/useThemed'
 import { useTheme } from '../theme/theme'
@@ -55,9 +56,13 @@ const styles = theme =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingHorizontal: theme.spacing.l,
-      paddingVertical: theme.spacing.s,
-      borderTopWidth: 1,
-      borderTopColor: 'lightgray',
+      paddingVertical: 10,
+      borderTopWidth: 0.5,
+      borderTopColor: theme.colors.gray3,
+    },
+    bottomBarChevronBack: {
+      color: theme.colors.foreground,
+      fontSize: 22,
     },
   })
 
@@ -187,16 +192,12 @@ const ReaderScreen = ({ route, navigation }) => {
         </View>
       </ScrollView>
       <View style={themedStyles.bottomBar}>
-        <Button
-          title="🔙"
-          color={theme.colors.foreground}
-          onPress={() => navigation.goBack()}
-        />
-        <Button
-          title="💗"
-          color={theme.colors.foreground}
-          onPress={() => console.log('heart pressed')}
-        />
+        <Pressable onPress={() => navigation.goBack()}>
+          <Icon
+            name="arrow-back-ios"
+            style={themedStyles.bottomBarChevronBack}
+          />
+        </Pressable>
       </View>
     </SafeAreaView>
   )

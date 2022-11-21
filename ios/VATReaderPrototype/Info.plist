@@ -43,6 +43,7 @@
 	<array>
 		<string>NewYork-Regular.ttf</string>
 		<string>NewYork-RegularItalic.ttf</string>
+		<string>MaterialIcons.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
