@@ -24,6 +24,12 @@ interface GetBalanceResponse {
   unit: string
 }
 
+interface GetFundingInvoiceResponse {
+  expires_at: string
+  payment_hash: string
+  payment_request: string
+}
+
 const createAccount = async (
   username: string,
   password: string,
@@ -65,10 +71,6 @@ const refreshCredentials = async (
 const getBalance = async (
   credentials: Credentials,
 ): Promise<GetBalanceResponse> => {
-  console.log(
-    `getting balance with credentials: ${JSON.stringify(credentials)}`,
-  )
-
   const { data } = await axios.get<GetBalanceResponse>(
     `${Config.LNDHUB_API_URL}/v2/balance`,
     {
@@ -82,4 +84,28 @@ const getBalance = async (
   return data
 }
 
-export { createAccount, login, refreshCredentials, getBalance }
+const getFundingInvoice = async (
+  credentials: Credentials,
+  amount: number,
+): Promise<GetFundingInvoiceResponse> => {
+  const { data } = await axios.post<GetFundingInvoiceResponse>(
+    `${Config.LNDHUB_API_URL}/v2/invoices`,
+    { amount, description: 'monocle top-up' },
+    {
+      headers: {
+        ...DEFAULT_HEADERS,
+        Authorization: `Bearer ${credentials.accessToken}`,
+      },
+    },
+  )
+
+  return data
+}
+
+export {
+  createAccount,
+  login,
+  refreshCredentials,
+  getBalance,
+  getFundingInvoice,
+}

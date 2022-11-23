@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Text, ActivityIndicator, Button } from 'react-native'
 
-import { createAccount, getBalance, login } from '../api/LndHub/Api'
+import {
+  createAccount,
+  getBalance,
+  getFundingInvoice,
+  login,
+} from '../api/LndHub/Api'
 import {
   persistCredentials,
   loadCredentials,
@@ -103,6 +108,26 @@ const ApiTester = ({ username, password, createUser, dismiss }) => {
     }
   }
 
+  async function onGetFundingInvoice() {
+    setIsLoading(true)
+
+    try {
+      const credentials = await loadCredentials()
+
+      if (credentials === null) {
+        return
+      }
+
+      const invoice = await getFundingInvoice(credentials, 1000)
+      setDataToRender(invoice)
+    } catch (err) {
+      console.error(err)
+      setError(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   async function onReset() {
     setIsLoading(true)
 
@@ -149,8 +174,15 @@ const ApiTester = ({ username, password, createUser, dismiss }) => {
         disabled={!hasCredentials}
         onPress={onGetBalance}
       />
+      <Button
+        title="Funding Invoice"
+        disabled={!hasCredentials}
+        onPress={onGetFundingInvoice}
+      />
       <Button title="Reset" onPress={onReset} />
-      {dataToRender && <Text>{JSON.stringify(dataToRender)}</Text>}
+      {dataToRender && (
+        <Text selectable={true}>{JSON.stringify(dataToRender)}</Text>
+      )}
     </View>
   )
 }
