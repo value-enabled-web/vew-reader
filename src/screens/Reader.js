@@ -23,8 +23,16 @@ import RenderHtml, {
 } from 'react-native-render-html'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
+import { payInvoice } from '../api/LndHub/Api'
+import { loadCredentials } from '../api/LndHub/Credentials'
 import Pressable from '../components/Pressable'
 import { useThemed } from '../hooks/useThemed'
+import {
+  fetchPaymentDetails,
+  fetchPaymentInfo,
+  urlFromLnAddress,
+  verifyInvoice,
+} from '../lib/lnurl'
 import { useTheme } from '../theme/theme'
 
 const customHTMLElementModels = {
@@ -128,6 +136,65 @@ const ReaderScreen = ({ route, navigation }) => {
     },
   })
 
+  const pay = async () => {
+    if (
+      !article ||
+      !article.paymentInfo ||
+      !article.paymentInfo.type === 'lnAddress' ||
+      !article.paymentInfo.value
+    ) {
+      console.log(`cannot pay to ${JSON.stringify(article)}`)
+      return
+    }
+
+    setIsLoading(true)
+    setError(null)
+
+    const lnAddress = article.paymentInfo.value
+    const amountSats = 1000
+    console.log(`paying ${amountSats}sats to ${lnAddress}`)
+
+    try {
+      const paymentEndpoint = urlFromLnAddress(lnAddress)
+      console.log(`got url: ${paymentEndpoint}`)
+      const paymentDetails = await fetchPaymentDetails(paymentEndpoint)
+      console.log(`got paymentDetails: ${JSON.stringify(paymentDetails)}`)
+      const paymentInfo = await fetchPaymentInfo(
+        paymentDetails.callback,
+        amountSats,
+      )
+      console.log(`got paymentInfo: ${JSON.stringify(paymentInfo)}`)
+      const invoiceIsValid = await verifyInvoice(
+        paymentDetails,
+        paymentInfo,
+        amountSats,
+      )
+      console.log(`invoiceIsValid: ${invoiceIsValid}`)
+
+      if (!invoiceIsValid) {
+        throw new Error('invoice is invalid')
+      }
+
+      const credentials = await loadCredentials()
+      console.log(`loaded api credentials: ${JSON.stringify(credentials)}`)
+
+      if (credentials === null) {
+        throw new Error('credentials missing')
+      }
+
+      const invoice = paymentInfo.pr
+      console.log(`invoice is: ${invoice}`)
+      const paymentResponse = await payInvoice(credentials, invoice, amountSats)
+
+      console.log(`got paymentResponse: ${JSON.stringify(paymentResponse)}`)
+    } catch (err) {
+      console.error(err)
+      setError(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   if (error) {
     return (
       <SafeAreaView
@@ -185,6 +252,7 @@ const ReaderScreen = ({ route, navigation }) => {
             activeOpacity={0.5}
             style={themedStyles.actionBarItem}
             onPress={() => {
+              pay()
               clapAnimationTextOffset.value = 0
               clapAnimationTextOpacity.value = 1
               clapAnimationTextOffset.value = withTiming(clapAnimationOffset, {

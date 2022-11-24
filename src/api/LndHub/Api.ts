@@ -30,6 +30,17 @@ interface GetFundingInvoiceResponse {
   payment_request: string
 }
 
+interface PayInvoiceResponse {
+  amount: number
+  description: string
+  description_hash: string
+  destination: string
+  fee: number
+  payment_hash: string
+  payment_preimage: string
+  payment_request: string
+}
+
 const createAccount = async (
   username: string,
   password: string,
@@ -86,11 +97,30 @@ const getBalance = async (
 
 const getFundingInvoice = async (
   credentials: Credentials,
-  amount: number,
+  amountSats: number,
 ): Promise<GetFundingInvoiceResponse> => {
   const { data } = await axios.post<GetFundingInvoiceResponse>(
     `${Config.LNDHUB_API_URL}/v2/invoices`,
-    { amount, description: 'monocle top-up' },
+    { amount: amountSats, description: 'monocle top-up' },
+    {
+      headers: {
+        ...DEFAULT_HEADERS,
+        Authorization: `Bearer ${credentials.accessToken}`,
+      },
+    },
+  )
+
+  return data
+}
+
+const payInvoice = async (
+  credentials: Credentials,
+  invoice: string,
+  amountSats: string,
+): Promise<PayInvoiceResponse> => {
+  const { data } = await axios.post<PayInvoiceResponse>(
+    `${Config.LNDHUB_API_URL}/v2/payments/bolt11`,
+    { amount: amountSats, invoice },
     {
       headers: {
         ...DEFAULT_HEADERS,
@@ -108,4 +138,5 @@ export {
   refreshCredentials,
   getBalance,
   getFundingInvoice,
+  payInvoice,
 }
