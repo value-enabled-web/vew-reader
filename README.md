@@ -1,8 +1,8 @@
-# 👨‍🔬 vat-reader
+# 👨‍🔬 vew-reader
 
-An experimental reader prototype for [Value-Added Text](https://github.com/seetee-io/value-enabled-text).
+An experimental reader prototype for [Value-Enabled Web](https://github.com/seetee-io/value-enabled-web).
 
-This protoype makes use of [`vat-api`](https://github.com/seetee-io/vat-api), running at [`https://vat.monocle.cnixbtc.com/api`](https://vat.monocle.cnixbtc.com/api) for bringing articles into a readable format.
+This protoype makes use of [`vew-api`](https://github.com/seetee-io/vew-api), running at [`https://vat.monocle.cnixbtc.com/api`](https://vat.monocle.cnixbtc.com/api) for bringing articles into a readable format.
 
 ## How to Run
 
