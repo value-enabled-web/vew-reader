@@ -24,7 +24,6 @@ fi
 
 if [ $num_channels -eq 0 ]; then
     echo "opening channel to lnd-author..."
-    $lncli openchannel $lnd_author_pubkey 100000
+    $lncli openchannel $lnd_author_pubkey 1000000000 100000000
     $bitcoin_cli generatetoaddress 10 bcrt1q3d8u9633j25e80lvjmljljdwcv8w3vkcnmtnh8 # burner address
 fi
-

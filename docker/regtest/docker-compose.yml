@@ -54,6 +54,7 @@ services:
       --bitcoind.rpcpass=auNi20KEaRWWKrQOJYv2Mr23-cSzO3i9eTB5eN5uePk=
       --bitcoind.zmqpubrawblock=tcp://monocle-bitcoind:28334
       --bitcoind.zmqpubrawtx=tcp://monocle-bitcoind:28335
+      --protocol.wumbo-channels
     volumes:
       - lnd:/home/lnd/.lnd
     expose:
@@ -85,6 +86,7 @@ services:
       --bitcoind.rpcpass=auNi20KEaRWWKrQOJYv2Mr23-cSzO3i9eTB5eN5uePk=
       --bitcoind.zmqpubrawblock=tcp://monocle-bitcoind:28334
       --bitcoind.zmqpubrawtx=tcp://monocle-bitcoind:28335
+      --protocol.wumbo-channels
     volumes:
       - lnd-author:/home/lnd/.lnd
     expose:

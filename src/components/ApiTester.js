@@ -118,7 +118,7 @@ const ApiTester = ({ username, password, createUser, dismiss }) => {
         return
       }
 
-      const response = await getFundingInvoice(credentials, 2000)
+      const response = await getFundingInvoice(credentials, 100000)
       setDataToRender(response.payment_request)
     } catch (err) {
       console.error(err)
