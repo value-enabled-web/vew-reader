@@ -1,0 +1,157 @@
+version: '3.3'
+services:
+  bitcoind:
+    image: polarlightning/bitcoind:23.0
+    container_name: monocle-bitcoind
+    restart: always
+    command: >-
+      bitcoind
+      -server=1
+      -regtest=1
+      -rpcauth=monocle:a1a53b40dbe532dc61e2e19072ae9567$$c4b0c669d3d4f00dbbace9775b58eb1605efddefe95eb0959908b9713b6ca505
+      -debug=1
+      -zmqpubrawblock=tcp://0.0.0.0:28334
+      -zmqpubrawtx=tcp://0.0.0.0:28335
+      -zmqpubhashblock=tcp://0.0.0.0:28336
+      -txindex=1
+      -dnsseed=0
+      -upnp=0
+      -rpcbind=0.0.0.0
+      -rpcallowip=0.0.0.0/0
+      -rpcport=18443
+      -rest
+      -listen=1
+      -listenonion=0
+      -fallbackfee=0.0002
+    volumes:
+      - bitcoind:/home/bitcoin/.bitcoin
+    expose:
+      - '18443'
+      - '28334'
+      - '28335'
+  lnd:
+    image: polarlightning/lnd:0.15.4-beta
+    container_name: monocle-lnd
+    restart: always
+    depends_on:
+      - bitcoind
+    command: >-
+      lnd
+      --noseedbackup
+      --trickledelay=5000
+      --alias=lnd
+      --externalip=lnd
+      --tlsextradomain=lnd
+      --tlsextradomain=monocle-lnd
+      --listen=0.0.0.0:9735
+      --rpclisten=0.0.0.0:10009
+      --restlisten=0.0.0.0:8080
+      --bitcoin.active
+      --bitcoin.regtest
+      --bitcoin.node=bitcoind
+      --bitcoind.rpchost=monocle-bitcoind
+      --bitcoind.rpcuser=monocle
+      --bitcoind.rpcpass=auNi20KEaRWWKrQOJYv2Mr23-cSzO3i9eTB5eN5uePk=
+      --bitcoind.zmqpubrawblock=tcp://monocle-bitcoind:28334
+      --bitcoind.zmqpubrawtx=tcp://monocle-bitcoind:28335
+    volumes:
+      - lnd:/home/lnd/.lnd
+    expose:
+      - '8080'
+      - '10009'
+      - '9735'
+  lnd-author:
+    image: polarlightning/lnd:0.15.4-beta
+    container_name: monocle-lnd-author
+    restart: always
+    depends_on:
+      - bitcoind
+    command: >-
+      lnd
+      --noseedbackup
+      --trickledelay=5000
+      --alias=lnd-author
+      --externalip=lnd-author
+      --tlsextradomain=lnd-author
+      --tlsextradomain=monocle-lnd-author
+      --listen=0.0.0.0:9735
+      --rpclisten=0.0.0.0:10009
+      --restlisten=0.0.0.0:8080
+      --bitcoin.active
+      --bitcoin.regtest
+      --bitcoin.node=bitcoind
+      --bitcoind.rpchost=monocle-bitcoind
+      --bitcoind.rpcuser=monocle
+      --bitcoind.rpcpass=auNi20KEaRWWKrQOJYv2Mr23-cSzO3i9eTB5eN5uePk=
+      --bitcoind.zmqpubrawblock=tcp://monocle-bitcoind:28334
+      --bitcoind.zmqpubrawtx=tcp://monocle-bitcoind:28335
+    volumes:
+      - lnd-author:/home/lnd/.lnd
+    expose:
+      - '8080'
+      - '10009'
+      - '9735'
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=lndhub
+    expose:
+      - '5432'
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+  lndhub:
+    build:
+      context: ./lndhub
+      args:
+        - LNDHUB_VERSION=0.10.0
+    restart: always
+    depends_on:
+      - lnd
+      - db
+    environment:
+      USERID: ${USERID:-1000}
+      GROUPID: ${GROUPID:-1000}
+      DATABASE_URI: postgresql://postgres:postgres@db:5432/lndhub?sslmode=disable
+      JWT_SECRET: TODO_CHANGE_ME
+      JWT_ACCESS_EXPIRY: 172800
+      JWT_REFRESH_EXPIRY: 604800
+      LND_ADDRESS: 'lnd:10009'
+      LND_MACAROON_FILE: /home/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon
+      LND_CERT_FILE: /home/lnd/.lnd/tls.cert
+      CUSTOM_NAME: monocle-lndhub
+    command: lndhub
+    volumes:
+      - lnd:/home/lnd/.lnd
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+  ligess:
+    build: ./ligess
+    restart: always
+    depends_on:
+      - lnd
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      - LIGESS_USERNAME=author
+      - LIGESS_DOMAIN=127.0.0.1:3001
+      - LIGESS_LN_BACKEND=LND
+      - LIGESS_LND_REST=https://lnd-author:8080
+    expose:
+        - '3000'
+    ports:
+      - '3001:3000'
+    volumes:
+      - lnd-author:/home/lnd/.lnd
+
+volumes:
+  bitcoind:
+  lnd:
+  lnd-author:
+  db:

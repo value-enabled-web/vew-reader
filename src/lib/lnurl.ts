@@ -44,13 +44,14 @@ const urlFromLnAddress = (lnAddress: string): string => {
 const fetchPaymentDetails = async (
   url: string,
 ): Promise<LNURLPaymentDetails> => {
+  // todo: this is just for local testing
   console.log(
-    `replacing ${url} with: http://localhost:3001/.well-known/lnurlp/bob`,
+    `replacing ${url} with: http://localhost:3001/.well-known/lnurlp/author`,
   )
 
   try {
     const response = await axios.get<LNURLPaymentDetails | LNURLError>(
-      'http://localhost:3001/.well-known/lnurlp/bob',
+      'http://localhost:3001/.well-known/lnurlp/author',
     )
 
     if (!Object.prototype.hasOwnProperty.call(response.data, 'callback')) {
@@ -67,13 +68,14 @@ const fetchPaymentInfo = async (
   url: string,
   amountSats: number,
 ): Promise<LNURLPaymentInfo> => {
+  // todo: this is just for local testing
   console.log(
-    `replacing ${url} with: http://localhost:3001/.well-known/lnurlp/bob`,
+    `replacing ${url} with: http://localhost:3001/.well-known/lnurlp/author`,
   )
 
   try {
     const response = await axios.get<LNURLPaymentInfo | LNURLError>(
-      'http://localhost:3001/.well-known/lnurlp/bob',
+      'http://localhost:3001/.well-known/lnurlp/author',
       {
         params: { amount: amountSats * 1000 },
       },
