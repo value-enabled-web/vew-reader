@@ -93,6 +93,38 @@ services:
       - '8080'
       - '10009'
       - '9735'
+  lnd-external:
+    image: polarlightning/lnd:0.15.4-beta
+    container_name: monocle-lnd-external
+    restart: always
+    depends_on:
+      - bitcoind
+    command: >-
+      lnd
+      --noseedbackup
+      --trickledelay=5000
+      --alias=lnd-external
+      --externalip=lnd-external
+      --tlsextradomain=lnd-external
+      --tlsextradomain=monocle-lnd-external
+      --listen=0.0.0.0:9735
+      --rpclisten=0.0.0.0:10009
+      --restlisten=0.0.0.0:8080
+      --bitcoin.active
+      --bitcoin.regtest
+      --bitcoin.node=bitcoind
+      --bitcoind.rpchost=monocle-bitcoind
+      --bitcoind.rpcuser=monocle
+      --bitcoind.rpcpass=auNi20KEaRWWKrQOJYv2Mr23-cSzO3i9eTB5eN5uePk=
+      --bitcoind.zmqpubrawblock=tcp://monocle-bitcoind:28334
+      --bitcoind.zmqpubrawtx=tcp://monocle-bitcoind:28335
+      --protocol.wumbo-channels
+    volumes:
+      - lnd-external:/home/lnd/.lnd
+    expose:
+      - '8080'
+      - '10009'
+      - '9735'
   db:
     image: postgres:14.1-alpine
     restart: always
@@ -156,4 +188,5 @@ volumes:
   bitcoind:
   lnd:
   lnd-author:
+  lnd-external:
   db:

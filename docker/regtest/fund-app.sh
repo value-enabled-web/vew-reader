@@ -2,6 +2,6 @@
 
 set -e
 
-lncli_author="docker exec --user lnd monocle-lnd-author lncli --network=regtest"
+lncli_external="docker exec --user lnd monocle-lnd-external lncli --network=regtest"
 
-$lncli_author sendpayment --force --pay_req=$1
+$lncli_external sendpayment --force --pay_req=$1
