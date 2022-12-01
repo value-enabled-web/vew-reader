@@ -1,5 +1,6 @@
 import React from 'react'
 import { useColorScheme, Pressable } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -14,6 +15,7 @@ const Stack = createNativeStackNavigator()
 
 const App = () => {
   const theme = useColorScheme() === 'dark' ? darkTheme : lightTheme
+  const themedStyles = styles(theme)
 
   return (
     <ThemeContext.Provider value={theme}>
@@ -34,10 +36,7 @@ const App = () => {
                   onPress={() => navigation.navigate('Account')}
                   color={theme.colors.foreground}>
                   <Icon
-                    style={{
-                      color: theme.colors.foreground,
-                      fontSize: 20,
-                    }}
+                    style={themedStyles.navibationBarButton}
                     name="settings"
                   />
                 </Pressable>
@@ -54,14 +53,30 @@ const App = () => {
           <Stack.Screen
             name="Account"
             component={AccountScreen}
-            options={{
+            options={({ navigation }) => ({
               presentation: 'formSheet',
-            }}
+              headerStyle: { backgroundColor: theme.colors.background },
+              headerTintColor: theme.colors.foreground,
+              headerShadowVisible: false,
+              title: 'Account',
+              headerRight: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  color={theme.colors.foreground}>
+                  <Icon style={themedStyles.navibationBarButton} name="close" />
+                </Pressable>
+              ),
+            })}
           />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeContext.Provider>
   )
 }
+
+const styles = theme =>
+  StyleSheet.create({
+    navibationBarButton: { color: theme.colors.foreground, fontSize: 20 },
+  })
 
 export default App
