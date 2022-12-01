@@ -1,4 +1,5 @@
 import axios from 'axios'
+import lightningPayReq from 'bolt11'
 import Hex from 'crypto-js/enc-hex'
 import sha256 from 'crypto-js/sha256'
 
@@ -96,8 +97,15 @@ const verifyInvoice = (
   paymentInfo: LNURLPaymentInfo,
   amountSats: number,
 ): boolean => {
-  // Todo: Implement this
-  return true
+  const invoice = lightningPayReq.decode(paymentInfo.pr)
+  const metadata = paymentDetails.metadata
+
+  const metadataHash = sha256(metadata).toString(Hex)
+
+  const metadataHashOk = invoice.tagsObject.purpose_commit_hash === metadataHash
+  const amountOk = invoice.millisatoshis === String(amountSats * 1000)
+
+  return metadataHashOk && amountOk
 }
 
 export {

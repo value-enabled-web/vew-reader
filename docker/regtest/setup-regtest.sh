@@ -29,7 +29,7 @@ if [ $lnd_num_peers -eq 0 ]; then
 fi
 if [ $lnd_num_channels -eq 0 ]; then
     echo "opening channel lnd <-> lnd-author..."
-    $lncli openchannel $lnd_author_pubkey 1000000000 100000000
+    $lncli openchannel $lnd_author_pubkey 1000000000
     $bitcoin_cli generatetoaddress 10 bcrt1q3d8u9633j25e80lvjmljljdwcv8w3vkcnmtnh8 # mine to burner address to confirm channel
 fi
 
@@ -43,7 +43,7 @@ if [ $lnd_external_num_peers -eq 0 ]; then
     $lncli_external connect "$lnd_pubkey@lnd:9735"
 fi
 if [ $lnd_external_num_channels -eq 0 ]; then
-    echo "opening channel lnd <-> lnd-external..."
-    $lncli_external openchannel $lnd_pubkey 1000000000 100000000
+    echo "opening channel lnd-external <-> lnd..."
+    $lncli_external openchannel $lnd_pubkey 1000000000
     $bitcoin_cli generatetoaddress 10 bcrt1q3d8u9633j25e80lvjmljljdwcv8w3vkcnmtnh8 # mine to burner address to confirm channel
 fi
