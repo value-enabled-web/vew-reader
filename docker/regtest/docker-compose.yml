@@ -158,7 +158,7 @@ services:
       LND_MACAROON_FILE: /home/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon
       LND_CERT_FILE: /home/lnd/.lnd/tls.cert
       CUSTOM_NAME: monocle-lndhub
-      BURST_RATE_LIMIT: 1
+      BURST_RATE_LIMIT: 10
       STRICT_RATE_LIMIT: 1
       DEFAULT_RATE_LIMIT: 1
     command: lndhub

@@ -7,9 +7,11 @@ import {
   Text,
   Button,
   ScrollView,
+  Pressable,
 } from 'react-native'
 
 import Clipboard from '@react-native-clipboard/clipboard'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import QRCode from 'react-qr-code'
 import urid from 'urid'
 
@@ -38,6 +40,7 @@ const AccountScreen = ({ navigation }) => {
 
   const [user, setUser] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showInvoiceText, setShowInvoiceText] = useState(false)
   const [balance, setBalance] = useState(null)
   const [invoice, setInvoice] = useState(null)
 
@@ -185,6 +188,27 @@ const AccountScreen = ({ navigation }) => {
     }
   }
 
+  async function onRefreshBalance() {
+    setIsLoading(true)
+
+    try {
+      const credentials = await loadCredentials()
+
+      if (credentials === null) {
+        return
+      }
+
+      const loadedBalance = await getBalance(credentials)
+
+      setBalance(loadedBalance.balance)
+    } catch (err) {
+      console.error(err)
+      setError(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   if (error) {
     return (
       <SafeAreaView>
@@ -202,9 +226,31 @@ const AccountScreen = ({ navigation }) => {
           ) : (
             <>
               {user && isLoggedIn && balance !== null && (
-                <View style={themedStyles.card}>
-                  <Text style={themedStyles.text}>{balance} sats</Text>
-                </View>
+                <>
+                  <View
+                    style={[
+                      themedStyles.card,
+                      themedStyles.accountIdContainer,
+                    ]}>
+                    <Text style={themedStyles.text}>Account ID</Text>
+                    <Text style={themedStyles.text}>{user.username}</Text>
+                  </View>
+                  <View
+                    style={[themedStyles.card, themedStyles.balanceContainer]}>
+                    <Text style={themedStyles.text}>Balance</Text>
+                    <View style={themedStyles.balance}>
+                      <Text style={themedStyles.text}>{balance} sats</Text>
+                      <Pressable
+                        onPress={onRefreshBalance}
+                        color={theme.colors.foreground}>
+                        <Icon
+                          style={themedStyles.refreshButton}
+                          name="refresh"
+                        />
+                      </Pressable>
+                    </View>
+                  </View>
+                </>
               )}
               <View style={themedStyles.card}>
                 {!user && (
@@ -246,11 +292,23 @@ const AccountScreen = ({ navigation }) => {
               {invoice && (
                 <View style={themedStyles.card}>
                   <View style={themedStyles.qrCodeContainer}>
-                    <QRCode value={invoice.toUpperCase()} />
+                    {showInvoiceText ? (
+                      <Text selectable style={themedStyles.invoice}>
+                        {invoice}
+                      </Text>
+                    ) : (
+                      <QRCode value={invoice.toUpperCase()} />
+                    )}
                   </View>
                   <Button
                     title="Copy to Clipboard"
                     onPress={Clipboard.setString(invoice)}
+                  />
+                  <Button
+                    title={
+                      showInvoiceText ? 'Show QR code' : 'Show Raw Invoice'
+                    }
+                    onPress={() => setShowInvoiceText(!showInvoiceText)}
                   />
                 </View>
               )}
@@ -286,6 +344,22 @@ const styles = theme =>
       elevation: 1,
       marginBottom: theme.spacing.m,
     },
+    accountIdContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    balanceContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    balance: {
+      flexDirection: 'row',
+    },
+    refreshButton: {
+      color: theme.colors.foreground,
+      fontSize: 20,
+      marginLeft: 10,
+    },
     qrCodeContainer: {
       alignItems: 'center',
       marginBottom: theme.spacing.m,
@@ -297,6 +371,13 @@ const styles = theme =>
       fontSize: theme.text.body.size,
       color: theme.colors.foreground,
       textAlign: 'center',
+    },
+    invoice: {
+      fontFamily: theme.text.footnoteMono.family,
+      fontWeight: theme.text.footnoteMono.weight,
+      fontSize: theme.text.footnoteMono.size,
+      color: theme.colors.foreground,
+      textAlign: 'left',
     },
   })
 
