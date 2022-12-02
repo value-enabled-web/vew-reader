@@ -144,7 +144,6 @@ const ReaderScreen = ({ route, navigation }) => {
       !article.paymentInfo.type === 'lnAddress' ||
       !article.paymentInfo.value
     ) {
-      console.log(`cannot pay to ${JSON.stringify(article)}`)
       return
     }
 
@@ -153,41 +152,32 @@ const ReaderScreen = ({ route, navigation }) => {
 
     const lnAddress = article.paymentInfo.value
     const amountSats = 1000
-    console.log(`paying ${amountSats}sats to ${lnAddress}`)
 
     try {
       const paymentEndpoint = urlFromLnAddress(lnAddress)
-      console.log(`got url: ${paymentEndpoint}`)
       const paymentDetails = await fetchPaymentDetails(paymentEndpoint)
-      console.log(`got paymentDetails: ${JSON.stringify(paymentDetails)}`)
       const paymentInfo = await fetchPaymentInfo(
         paymentDetails.callback,
         amountSats,
       )
-      console.log(`got paymentInfo: ${JSON.stringify(paymentInfo)}`)
       const invoiceIsValid = await verifyInvoice(
         paymentDetails,
         paymentInfo,
         amountSats,
       )
-      console.log(`invoiceIsValid: ${invoiceIsValid}`)
 
       if (!invoiceIsValid) {
         throw new Error('invoice is invalid')
       }
 
       const credentials = await loadCredentials()
-      console.log(`loaded api credentials: ${JSON.stringify(credentials)}`)
 
       if (credentials === null) {
         throw new Error('credentials missing')
       }
 
       const invoice = paymentInfo.pr
-      console.log(`invoice is: ${invoice}`)
-      const paymentResponse = await payInvoice(credentials, invoice, amountSats)
-
-      console.log(`got paymentResponse: ${JSON.stringify(paymentResponse)}`)
+      await payInvoice(credentials, invoice, amountSats)
     } catch (err) {
       console.error(err)
       setError(err)
@@ -248,34 +238,44 @@ const ReaderScreen = ({ route, navigation }) => {
             onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" style={themedStyles.actionBarIcon} />
           </Pressable>
-          <View style={themedStyles.actionBarDivider} />
-          <Pressable
-            activeOpacity={0.5}
-            style={themedStyles.actionBarItem}
-            disabled={isPaying}
-            onPress={() => {
-              pay()
-              clapAnimationTextOffset.value = 0
-              clapAnimationTextOpacity.value = 1
-              clapAnimationTextOffset.value = withTiming(clapAnimationOffset, {
-                duration: clapAnimationDuration,
-              })
-              clapAnimationTextOpacity.value = withTiming(0, {
-                duration: clapAnimationDuration,
-              })
-            }}>
-            <Icon name={'favorite-border'} style={themedStyles.actionBarIcon} />
-            <View>
-              <Animated.View
-                style={[
-                  StyleSheet.absoluteFillObject,
-                  clapTextAnimationStyles,
-                ]}>
-                <Text style={themedStyles.actionBarText}>1k</Text>
-              </Animated.View>
-              <Text style={themedStyles.actionBarText}>1k</Text>
-            </View>
-          </Pressable>
+          {article && article.paymentInfo && (
+            <>
+              <View style={themedStyles.actionBarDivider} />
+              <Pressable
+                activeOpacity={0.5}
+                style={themedStyles.actionBarItem}
+                disabled={isPaying}
+                onPress={() => {
+                  pay()
+                  clapAnimationTextOffset.value = 0
+                  clapAnimationTextOpacity.value = 1
+                  clapAnimationTextOffset.value = withTiming(
+                    clapAnimationOffset,
+                    {
+                      duration: clapAnimationDuration,
+                    },
+                  )
+                  clapAnimationTextOpacity.value = withTiming(0, {
+                    duration: clapAnimationDuration,
+                  })
+                }}>
+                <Icon
+                  name={'favorite-border'}
+                  style={themedStyles.actionBarIcon}
+                />
+                <View>
+                  <Animated.View
+                    style={[
+                      StyleSheet.absoluteFillObject,
+                      clapTextAnimationStyles,
+                    ]}>
+                    <Text style={themedStyles.actionBarText}>1k</Text>
+                  </Animated.View>
+                  <Text style={themedStyles.actionBarText}>1k</Text>
+                </View>
+              </Pressable>
+            </>
+          )}
         </Animated.View>
       </View>
     </SafeAreaView>

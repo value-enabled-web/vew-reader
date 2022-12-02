@@ -75,16 +75,12 @@ const fetchPaymentInfo = async (
   )
 
   try {
-    console.log('000')
-
     const response = await axios.get<LNURLPaymentInfo | LNURLError>(
       'http://localhost:3001/.well-known/lnurlp/author',
       {
         params: { amount: amountSats * 1000 },
       },
     )
-
-    console.log('111')
 
     if (!Object.prototype.hasOwnProperty.call(response.data, 'pr')) {
       throw response.data as LNURLError
