@@ -47,7 +47,7 @@ const fetchPaymentDetails = async (
 ): Promise<LNURLPaymentDetails> => {
   // todo: this is just for local testing
   console.log(
-    `replacing ${url} with: http://localhost:3001/.well-known/lnurlp/author`,
+    `1 replacing ${url} with: http://localhost:3001/.well-known/lnurlp/author`,
   )
 
   try {
@@ -71,16 +71,20 @@ const fetchPaymentInfo = async (
 ): Promise<LNURLPaymentInfo> => {
   // todo: this is just for local testing
   console.log(
-    `replacing ${url} with: http://localhost:3001/.well-known/lnurlp/author`,
+    `2 replacing ${url} with: http://localhost:3001/.well-known/lnurlp/author`,
   )
 
   try {
+    console.log('000')
+
     const response = await axios.get<LNURLPaymentInfo | LNURLError>(
       'http://localhost:3001/.well-known/lnurlp/author',
       {
         params: { amount: amountSats * 1000 },
       },
     )
+
+    console.log('111')
 
     if (!Object.prototype.hasOwnProperty.call(response.data, 'pr')) {
       throw response.data as LNURLError

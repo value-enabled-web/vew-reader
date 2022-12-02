@@ -50,6 +50,7 @@ const ReaderScreen = ({ route, navigation }) => {
   const themedReaderStyles = useThemed(readerStyles)
 
   const [isLoading, setIsLoading] = useState(false)
+  const [isPaying, setIsPaying] = useState(false)
   const [error, setError] = useState(null)
   const [article, setArticle] = useState(null)
   const { width } = useWindowDimensions()
@@ -147,7 +148,7 @@ const ReaderScreen = ({ route, navigation }) => {
       return
     }
 
-    setIsLoading(true)
+    setIsPaying(true)
     setError(null)
 
     const lnAddress = article.paymentInfo.value
@@ -191,7 +192,7 @@ const ReaderScreen = ({ route, navigation }) => {
       console.error(err)
       setError(err)
     } finally {
-      setIsLoading(false)
+      setIsPaying(false)
     }
   }
 
@@ -251,6 +252,7 @@ const ReaderScreen = ({ route, navigation }) => {
           <Pressable
             activeOpacity={0.5}
             style={themedStyles.actionBarItem}
+            disabled={isPaying}
             onPress={() => {
               pay()
               clapAnimationTextOffset.value = 0
