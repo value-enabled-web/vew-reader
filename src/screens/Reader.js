@@ -213,7 +213,13 @@ const ReaderScreen = ({ route, navigation }) => {
         style={[themedStyles.textContainer]}
         onScroll={scrollHandler}>
         <Text style={[themedStyles.title]}>{article._data.title}</Text>
-        <Text style={[themedStyles.subtitle]}>{article._data.hostname}</Text>
+        {article.paymentInfo ? (
+          <Text style={[themedStyles.subtitle]}>
+            {article.paymentInfo.value}
+          </Text>
+        ) : (
+          <Text style={[themedStyles.subtitle]}>{article._data.hostname}</Text>
+        )}
         <View style={[themedStyles.article]}>
           <RenderHtml
             contentWidth={width - 2 * theme.spacing.m}
