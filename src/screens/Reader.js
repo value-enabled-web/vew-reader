@@ -178,6 +178,8 @@ const ReaderScreen = ({ route, navigation }) => {
 
       const invoice = paymentInfo.pr
       await payInvoice(credentials, invoice, amountSats)
+
+      console.log('paid')
     } catch (err) {
       console.error(err)
       setError(err)
@@ -190,9 +192,7 @@ const ReaderScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView
         style={[themedStyles.background, themedStyles.centeredContainer]}>
-        <Text style={themedStyles.errorMessage}>
-          💔 Failed to load article.
-        </Text>
+        <Text style={themedStyles.errorMessage}>💔</Text>
       </SafeAreaView>
     )
   }

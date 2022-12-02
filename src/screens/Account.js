@@ -179,6 +179,9 @@ const AccountScreen = ({ navigation }) => {
       }
 
       const response = await getFundingInvoice(credentials, 100000)
+
+      console.log(response.payment_request)
+
       setInvoice(response.payment_request)
     } catch (err) {
       console.error(err)

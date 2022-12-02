@@ -2,6 +2,7 @@ import axios from 'axios'
 import lightningPayReq from 'bolt11'
 import Hex from 'crypto-js/enc-hex'
 import sha256 from 'crypto-js/sha256'
+import Config from 'react-native-config'
 
 export interface LNURLError {
   status: 'ERROR'
@@ -45,14 +46,20 @@ const urlFromLnAddress = (lnAddress: string): string => {
 const fetchPaymentDetails = async (
   url: string,
 ): Promise<LNURLPaymentDetails> => {
-  // todo: this is just for local testing
-  console.log(
-    `1 replacing ${url} with: http://localhost:3001/.well-known/lnurlp/author`,
-  )
+  let requestUrl = url
+
+  if (
+    Config.DEV_REPLACE_LNADDRESS &&
+    JSON.parse(Config.DEV_REPLACE_LNADDRESS)
+  ) {
+    requestUrl = `http://${Config.DEV_REPLACE_LNADDRESS_HOST}:${Config.DEV_REPLACE_LNADDRESS_PORT}/.well-known/lnurlp/${Config.DEV_REPLACE_LNADDRESS_NAME}`
+  }
+
+  console.log(`fetching payment details: ${requestUrl}`)
 
   try {
     const response = await axios.get<LNURLPaymentDetails | LNURLError>(
-      'http://localhost:3001/.well-known/lnurlp/author',
+      requestUrl,
     )
 
     if (!Object.prototype.hasOwnProperty.call(response.data, 'callback')) {
@@ -69,14 +76,22 @@ const fetchPaymentInfo = async (
   url: string,
   amountSats: number,
 ): Promise<LNURLPaymentInfo> => {
-  // todo: this is just for local testing
+  let requestUrl = url
+
+  if (
+    Config.DEV_REPLACE_LNADDRESS &&
+    JSON.parse(Config.DEV_REPLACE_LNADDRESS)
+  ) {
+    requestUrl = `http://${Config.DEV_REPLACE_LNADDRESS_HOST}:${Config.DEV_REPLACE_LNADDRESS_PORT}/.well-known/lnurlp/${Config.DEV_REPLACE_LNADDRESS_NAME}`
+  }
+
   console.log(
-    `2 replacing ${url} with: http://localhost:3001/.well-known/lnurlp/author`,
+    `fetching payment info: ${requestUrl}?amount=${amountSats * 1000}`,
   )
 
   try {
     const response = await axios.get<LNURLPaymentInfo | LNURLError>(
-      'http://localhost:3001/.well-known/lnurlp/author',
+      requestUrl,
       {
         params: { amount: amountSats * 1000 },
       },

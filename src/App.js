@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native'
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import Config from 'react-native-config'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import AccountScreen from './screens/Account'
@@ -16,6 +17,8 @@ const Stack = createNativeStackNavigator()
 const App = () => {
   const theme = useColorScheme() === 'dark' ? darkTheme : lightTheme
   const themedStyles = styles(theme)
+
+  console.log(Config)
 
   return (
     <ThemeContext.Provider value={theme}>
