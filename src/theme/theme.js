@@ -11,6 +11,9 @@ const palette = {
   gray3Dark: '#48484a',
   almostBlack: '#1c1c1e',
   almostWhite: '#f2f2f7',
+  green: '#2fdc70',
+  purple: '#7683b9',
+  pink: '#fc0d9e',
 }
 
 const fonts = {
@@ -49,6 +52,9 @@ export const lightTheme = {
     gray: palette.gray,
     gray2: palette.gray2Light,
     gray3: palette.gray3Light,
+    green: palette.green,
+    purple: palette.purple,
+    pink: palette.pink,
   },
   spacing: {
     s: 8,

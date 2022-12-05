@@ -216,6 +216,7 @@ const AccountScreen = ({ navigation }) => {
     return (
       <SafeAreaView>
         <Text>💔 Error</Text>
+        <Button title="Delete Account" onPress={onDeleteAccount} />
       </SafeAreaView>
     )
   }
@@ -255,7 +256,11 @@ const AccountScreen = ({ navigation }) => {
                   </View>
                 </>
               )}
-              <View style={themedStyles.card}>
+              <View
+                style={[
+                  themedStyles.card,
+                  themedStyles.accountActionsContainer,
+                ]}>
                 {!user && (
                   <Button
                     style={themedStyles.button}
@@ -271,25 +276,47 @@ const AccountScreen = ({ navigation }) => {
                   />
                 )}
                 {user && isLoggedIn && (
-                  <Button
+                  <Pressable
                     style={themedStyles.button}
-                    title="Logout"
-                    onPress={onLogout}
-                  />
+                    onPress={onGetFundingInvoice}>
+                    <Icon
+                      style={[
+                        themedStyles.buttonIcon,
+                        themedStyles.buttonIconTopup,
+                      ]}
+                      name="arrow-downward"
+                      size={20}
+                    />
+                    <Text style={themedStyles.buttonText}>Topup</Text>
+                  </Pressable>
                 )}
                 {user && isLoggedIn && (
-                  <Button
-                    style={themedStyles.button}
-                    title="Delete Account"
-                    onPress={onDeleteAccount}
-                  />
+                  <Pressable style={themedStyles.button} onPress={onLogout}>
+                    <Icon
+                      style={[
+                        themedStyles.buttonIcon,
+                        themedStyles.buttonIconLogout,
+                      ]}
+                      name="logout"
+                      size={20}
+                    />
+                    <Text style={themedStyles.buttonText}>Logout</Text>
+                  </Pressable>
                 )}
                 {user && isLoggedIn && (
-                  <Button
+                  <Pressable
                     style={themedStyles.button}
-                    title="Generate Funding Invoice"
-                    onPress={onGetFundingInvoice}
-                  />
+                    onPress={onDeleteAccount}>
+                    <Icon
+                      style={[
+                        themedStyles.buttonIcon,
+                        themedStyles.buttonIconDeleteAccount,
+                      ]}
+                      name="close"
+                      size={20}
+                    />
+                    <Text style={themedStyles.buttonText}>Delete</Text>
+                  </Pressable>
                 )}
               </View>
               {invoice && (
@@ -307,6 +334,7 @@ const AccountScreen = ({ navigation }) => {
                     title="Copy to Clipboard"
                     onPress={Clipboard.setString(invoice)}
                   />
+                  <View style={{ marginTop: theme.spacing.s }} />
                   <Button
                     title={
                       showInvoiceText ? 'Show QR code' : 'Show Raw Invoice'
@@ -363,11 +391,42 @@ const styles = theme =>
       fontSize: 20,
       marginLeft: 10,
     },
+    accountActionsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
+    button: {
+      marginHorizontal: theme.spacing.m,
+    },
+    buttonIcon: {
+      alignSelf: 'center',
+      padding: 8,
+      marginBottom: theme.spacing.s,
+      borderWidth: 1.5,
+      borderRadius: 8,
+    },
+    buttonIconTopup: {
+      color: theme.colors.green,
+      borderColor: theme.colors.green,
+    },
+    buttonIconLogout: {
+      color: theme.colors.purple,
+      borderColor: theme.colors.purple,
+    },
+    buttonIconDeleteAccount: {
+      color: theme.colors.pink,
+      borderColor: theme.colors.pink,
+    },
+    buttonText: {
+      fontFamily: theme.text.footnote.family,
+      fontWeight: theme.text.footnote.weight,
+      fontSize: theme.text.footnote.size,
+      color: theme.colors.foreground,
+    },
     qrCodeContainer: {
       alignItems: 'center',
       marginBottom: theme.spacing.m,
     },
-    button: {},
     text: {
       fontFamily: theme.text.body.family,
       fontWeight: theme.text.body.weight,

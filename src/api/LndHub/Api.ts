@@ -58,7 +58,6 @@ const login = async (
   username: string,
   password: string,
 ): Promise<Credentials> => {
-  console.log(`http://${Config.LNDHUB_API_HOST}:${Config.LNDHUB_API_PORT}/auth`)
   const { data } = await axios.post<AuthResponse>(
     `http://${Config.LNDHUB_API_HOST}:${Config.LNDHUB_API_PORT}/auth`,
     { login: username, password },
