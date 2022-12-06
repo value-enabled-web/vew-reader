@@ -13,6 +13,7 @@ module.exports = {
         inlineRequires: true,
       },
     }),
+    minifierPath: 'metro-minify-terser',
   },
   resolver: {
     extraNodeModules: {
