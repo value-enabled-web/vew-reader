@@ -4,7 +4,15 @@ platform :ios do
   lane :appicons do
     appicon(
         appicon_devices: [:iphone],
-        appicon_path: "./ios/VATReaderPrototype/Images.xcassets"
+        appicon_image_file: 'fastlane/metadata/app_icon.png',
+        appicon_path: './ios/VATReaderPrototype/Images.xcassets',
+        appicon_name: 'AppIcon.appiconset',
     )
+    appicon(
+      appicon_devices: [:iphone],
+      appicon_image_file: 'fastlane/metadata/app_icon_development.png',
+      appicon_path: './ios/VATReaderPrototype/Images.xcassets',
+      appicon_name: 'AppIconDevelopment.appiconset',
+  )
   end
 end
