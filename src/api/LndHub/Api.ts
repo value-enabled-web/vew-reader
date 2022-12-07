@@ -46,7 +46,7 @@ const createAccount = async (
   password: string,
 ): Promise<CreateAccountResponse> => {
   const { data } = await axios.post<CreateAccountResponse>(
-    `http://${Config.LNDHUB_API_HOST}:${Config.LNDHUB_API_PORT}/v2/users`,
+    `http://${Config.LN_API_HOST}:${Config.LN_API_PORT}/v2/users`,
     { login: username, password },
     { headers: { ...DEFAULT_HEADERS } },
   )
@@ -59,7 +59,7 @@ const login = async (
   password: string,
 ): Promise<Credentials> => {
   const { data } = await axios.post<AuthResponse>(
-    `http://${Config.LNDHUB_API_HOST}:${Config.LNDHUB_API_PORT}/auth`,
+    `http://${Config.LN_API_HOST}:${Config.LN_API_PORT}/auth`,
     { login: username, password },
     { headers: { ...DEFAULT_HEADERS } },
   )
@@ -71,7 +71,7 @@ const refreshCredentials = async (
   refreshToken: string,
 ): Promise<Credentials> => {
   const { data } = await axios.post<AuthResponse>(
-    `http://${Config.LNDHUB_API_HOST}:${Config.LNDHUB_API_PORT}/auth`,
+    `http://${Config.LN_API_HOST}:${Config.LN_API_PORT}/auth`,
     { refresh_token: refreshToken },
     { headers: { ...DEFAULT_HEADERS } },
   )
@@ -83,7 +83,7 @@ const getBalance = async (
   credentials: Credentials,
 ): Promise<GetBalanceResponse> => {
   const { data } = await axios.get<GetBalanceResponse>(
-    `http://${Config.LNDHUB_API_HOST}:${Config.LNDHUB_API_PORT}/v2/balance`,
+    `http://${Config.LN_API_HOST}:${Config.LN_API_PORT}/v2/balance`,
     {
       headers: {
         ...DEFAULT_HEADERS,
@@ -100,7 +100,7 @@ const getFundingInvoice = async (
   amountSats: number,
 ): Promise<GetFundingInvoiceResponse> => {
   const { data } = await axios.post<GetFundingInvoiceResponse>(
-    `http://${Config.LNDHUB_API_HOST}:${Config.LNDHUB_API_PORT}/v2/invoices`,
+    `http://${Config.LN_API_HOST}:${Config.LN_API_PORT}/v2/invoices`,
     { amount: amountSats, description: 'monocle top-up' },
     {
       headers: {
@@ -119,7 +119,7 @@ const payInvoice = async (
   amountSats: string,
 ): Promise<PayInvoiceResponse> => {
   const { data } = await axios.post<PayInvoiceResponse>(
-    `http://${Config.LNDHUB_API_HOST}:${Config.LNDHUB_API_PORT}/v2/payments/bolt11`,
+    `http://${Config.LN_API_HOST}:${Config.LN_API_PORT}/v2/payments/bolt11`,
     { amount: amountSats, invoice },
     {
       headers: {

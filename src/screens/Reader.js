@@ -151,7 +151,7 @@ const ReaderScreen = ({ route, navigation }) => {
     setError(null)
 
     const lnAddress = article.paymentInfo.value
-    const amountSats = 1000
+    const amountSats = parseInt(Config.BOOST_AMOUNT_SATS, 10)
 
     try {
       const paymentEndpoint = urlFromLnAddress(lnAddress)
@@ -177,6 +177,9 @@ const ReaderScreen = ({ route, navigation }) => {
       }
 
       const invoice = paymentInfo.pr
+
+      console.log(`paying invoice: ${invoice}`)
+
       await payInvoice(credentials, invoice, amountSats)
 
       console.log('paid')
@@ -204,6 +207,20 @@ const ReaderScreen = ({ route, navigation }) => {
         <ActivityIndicator animating={true} />
       </SafeAreaView>
     )
+  }
+
+  const boostButtonText = amountSats => {
+    let amount = amountSats
+
+    if (typeof amount === 'string') {
+      amount = parseInt(amount, 10)
+    }
+
+    if (amount >= 1000) {
+      return `${amount / 1000}k sats`
+    }
+
+    return `${amount} sats`
   }
 
   return (
@@ -275,9 +292,13 @@ const ReaderScreen = ({ route, navigation }) => {
                       StyleSheet.absoluteFillObject,
                       clapTextAnimationStyles,
                     ]}>
-                    <Text style={themedStyles.actionBarText}>1k</Text>
+                    <Text style={themedStyles.actionBarText}>
+                      {boostButtonText(Config.BOOST_AMOUNT_SATS)}
+                    </Text>
                   </Animated.View>
-                  <Text style={themedStyles.actionBarText}>1k</Text>
+                  <Text style={themedStyles.actionBarText}>
+                    {boostButtonText(Config.BOOST_AMOUNT_SATS)}
+                  </Text>
                 </View>
               </Pressable>
             </>

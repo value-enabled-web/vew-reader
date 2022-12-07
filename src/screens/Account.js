@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import Clipboard from '@react-native-clipboard/clipboard'
+import Config from 'react-native-config'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import QRCode from 'react-qr-code'
 import urid from 'urid'
@@ -68,7 +69,11 @@ const AccountScreen = ({ navigation }) => {
 
         const loadedBalance = await getBalance(loadedCredentials)
 
-        setBalance(loadedBalance.balance)
+        if (loadedBalance.unit === 'sat') {
+          setBalance(loadedBalance.balance)
+        } else if (loadedBalance.unit === 'msat') {
+          setBalance(loadedBalance.balance / 1000)
+        }
       } catch (err) {
         console.error(err)
         setError(err)
@@ -105,7 +110,11 @@ const AccountScreen = ({ navigation }) => {
 
       const loadedBalance = await getBalance(credentials)
 
-      setBalance(loadedBalance.balance)
+      if (loadedBalance.unit === 'sat') {
+        setBalance(loadedBalance.balance)
+      } else if (loadedBalance.unit === 'msat') {
+        setBalance(loadedBalance.balance / 1000)
+      }
 
       setIsLoggedIn(true)
     } catch (err) {
@@ -126,7 +135,12 @@ const AccountScreen = ({ navigation }) => {
 
       const loadedBalance = await getBalance(credentials)
 
-      setBalance(loadedBalance.balance)
+      if (loadedBalance.unit === 'sat') {
+        setBalance(loadedBalance.balance)
+      } else if (loadedBalance.unit === 'msat') {
+        setBalance(loadedBalance.balance / 1000)
+      }
+
       setIsLoggedIn(true)
     } catch (err) {
       console.error(err)
@@ -178,7 +192,10 @@ const AccountScreen = ({ navigation }) => {
         return
       }
 
-      const response = await getFundingInvoice(credentials, 100000)
+      const response = await getFundingInvoice(
+        credentials,
+        parseInt(Config.FUNDING_INVOICE_AMOUNT_SATS, 10),
+      )
 
       console.log(response.payment_request)
 
@@ -203,7 +220,11 @@ const AccountScreen = ({ navigation }) => {
 
       const loadedBalance = await getBalance(credentials)
 
-      setBalance(loadedBalance.balance)
+      if (loadedBalance.unit === 'sat') {
+        setBalance(loadedBalance.balance)
+      } else if (loadedBalance.unit === 'msat') {
+        setBalance(loadedBalance.balance / 1000)
+      }
     } catch (err) {
       console.error(err)
       setError(err)

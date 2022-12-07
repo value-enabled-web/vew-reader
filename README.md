@@ -46,6 +46,9 @@ Have a look at [_Setting up the Development Environment_](https://reactnative.de
 
 Once setup, run:
 
-- `npx react-native start` to start the JS bundler; and in a separate terminal
-- `npx react-native run-ios`; or
+- `npm start` to start the JS bundler; and in a separate terminal
+
+- `npm run ios:development`; or
+- `npm run ios:production`; or
+
 - `npx react-native run-android` to start the application

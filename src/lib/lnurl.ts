@@ -30,15 +30,21 @@ const urlFromLnAddress = (lnAddress: string): string => {
     throw new Error('invalid ln address')
   }
 
-  let [name, host] = lnAddress.split('@')
+  let address = lnAddress
+
+  if (Config.DEV_LOCAL_LNADDRESS) {
+    address = Config.DEV_LOCAL_LNADDRESS
+  }
+
+  let [name, host] = address.split('@')
 
   // remove invisible characters %EF%B8%8F
   name = name.replace(/[^ -~]+/g, '')
   host = host.replace(/[^ -~]+/g, '')
 
-  const url = `https://${host}/.well-known/lnurlp/${name}`
+  let url = `https://${host}/.well-known/lnurlp/${name}`
 
-  console.log(`transforming ${lnAddress} to: ${url}`)
+  console.log(`transforming ${address} to: ${url}`)
 
   return url
 }
@@ -48,11 +54,8 @@ const fetchPaymentDetails = async (
 ): Promise<LNURLPaymentDetails> => {
   let requestUrl = url
 
-  if (
-    Config.DEV_REPLACE_LNADDRESS &&
-    JSON.parse(Config.DEV_REPLACE_LNADDRESS)
-  ) {
-    requestUrl = `http://${Config.DEV_REPLACE_LNADDRESS_HOST}:${Config.DEV_REPLACE_LNADDRESS_PORT}/.well-known/lnurlp/${Config.DEV_REPLACE_LNADDRESS_NAME}`
+  if (Config.DEV_LOCAL_LNADDRESS) {
+    requestUrl = requestUrl.replace('https', 'http')
   }
 
   console.log(`fetching payment details: ${requestUrl}`)
@@ -78,11 +81,8 @@ const fetchPaymentInfo = async (
 ): Promise<LNURLPaymentInfo> => {
   let requestUrl = url
 
-  if (
-    Config.DEV_REPLACE_LNADDRESS &&
-    JSON.parse(Config.DEV_REPLACE_LNADDRESS)
-  ) {
-    requestUrl = `http://${Config.DEV_REPLACE_LNADDRESS_HOST}:${Config.DEV_REPLACE_LNADDRESS_PORT}/.well-known/lnurlp/${Config.DEV_REPLACE_LNADDRESS_NAME}`
+  if (Config.DEV_LOCAL_LNADDRESS) {
+    requestUrl = requestUrl.replace('https', 'http')
   }
 
   console.log(
@@ -119,6 +119,8 @@ const verifyInvoice = (
 
   const metadataHashOk = invoice.tagsObject.purpose_commit_hash === metadataHash
   const amountOk = invoice.millisatoshis === String(amountSats * 1000)
+
+  console.log(`invoice verified: ${metadataHashOk && amountOk}`)
 
   return metadataHashOk && amountOk
 }
