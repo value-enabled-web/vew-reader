@@ -1,0 +1,38 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=vew-accounts
+    expose:
+      - '5432'
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+  vew-accounts:
+    build: ./vew-accounts
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - PORT=3000
+      - LOG_REQUESTS=true
+      - JWT_SECRET=NOT_SO_SECRET_CHANGE_ME
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=vew-accounts
+      - DB_DIALECT=postgres
+      - LNBITS_HOST=legend.lnbits.com
+    expose:
+        - '3000'
+    ports:
+      - '3000:3000'
+
+volumes:
+  db:
