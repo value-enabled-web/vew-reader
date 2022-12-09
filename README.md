@@ -47,7 +47,8 @@ Alongside the docker setup, some helper scripts in `docker/regtest` simplify dev
 For testing with real sats, make use of the dockerized backend in `/docker/mainnet`.
 It runs a simple NodeJS gateway which uses LNBits as custodial Lightning accounting system.
 
-To run the mainnet backend fiorst create a wallet on [legend.lnbits.com](https://legend.lnbits.com) and then add a file `docker/mainnet/vew-accounts/.env` with the credentials of the created LNBits wallet.
+To run the mainnet backend fiorst create a wallet on [legend.lnbits.com](https://legend.lnbits.com) and enable the _User Manger_ extension.
+Add a file `docker/mainnet/vew-accounts/.env` with the credentials of the created LNBits wallet.
 Refer to `docker/mainnet/vew-accounts/.env.example` for which credentials are necessary.
 
 Then:
