@@ -217,10 +217,10 @@ const ReaderScreen = ({ route, navigation }) => {
     }
 
     if (amount >= 1000) {
-      return `${amount / 1000}k sats`
+      return `${amount / 1000}k`
     }
 
-    return `${amount} sats`
+    return `${amount}`
   }
 
   return (
@@ -375,6 +375,7 @@ const styles = theme =>
       alignItems: 'center',
       fontSize: 25,
       color: theme.colors.foreground,
+      marginTop: 1,
     },
     boostIcon: {
       fontSize: 27,
@@ -385,7 +386,8 @@ const styles = theme =>
       fontSize: 17,
       fontWeight: theme.text.body.weight,
       color: theme.colors.foreground,
-      marginLeft: 5,
+      marginLeft: 8,
+      marginRight: 8,
     },
     actionBarDivider: {
       borderLeftColor: theme.colors.gray3,
