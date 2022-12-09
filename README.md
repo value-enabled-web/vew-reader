@@ -51,4 +51,5 @@ Once setup, run:
 - `npm run ios:development`; or
 - `npm run ios:production`; or
 
-- `npx react-native run-android` to start the application
+- `npm run android:development`; or
+- `npm run android:production`
