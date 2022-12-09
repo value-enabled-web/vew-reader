@@ -46,6 +46,7 @@ Alongside the docker setup, some helper scripts in `docker/regtest` simplify dev
 
 For testing with real sats, make use of the dockerized backend in `/docker/mainnet`.
 It runs a simple NodeJS gateway which uses LNBits as custodial Lightning accounting system.
+See [`vew-accounts`](https://github.com/seetee-io/vew-accounts).
 
 To run the mainnet backend fiorst create a wallet on [legend.lnbits.com](https://legend.lnbits.com) and enable the _User Manger_ extension.
 Add a file `docker/mainnet/vew-accounts/.env` with the credentials of the created LNBits wallet.
@@ -54,8 +55,10 @@ Refer to `docker/mainnet/vew-accounts/.env.example` for which credentials are ne
 Then:
 
 - `cd docker/mainnet`
-- `docker compose build --build-arg GH_ACCESS_TOKEN=<Your GitHub Access Token>` (needed to clone the private [`vew-accounts`](https://github.com/seetee-io/vew-accounts) repo)
+- `docker compose build --build-arg GH_ACCESS_TOKEN=<Your GitHub Access Token>`
 - `docker compose up`
+
+The access token is needed to clone the private [`vew-accounts`](https://github.com/seetee-io/vew-accounts) repo.
 
 ### Mobile App
 
@@ -69,9 +72,7 @@ Just comment out whatever you don't want.
 Once setup, run:
 
 - `npm start` to start the JS bundler; and in a separate terminal
-
-- `npm run ios:development`; or
-- `npm run android:development`
+- `npm run ios:development`; or `npm run android:development`
 
 Depending on which backend you're running at the moment, these builds will run on regtest or mainnet.
 
