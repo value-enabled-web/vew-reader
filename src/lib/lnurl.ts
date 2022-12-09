@@ -82,7 +82,10 @@ const fetchPaymentInfo = async (
   let requestUrl = url
 
   if (Config.DEV_LOCAL_LNADDRESS) {
+    let host = Config.DEV_LOCAL_LNADDRESS.split('@')[1]
+
     requestUrl = requestUrl.replace('https', 'http')
+    requestUrl = requestUrl.replace('127.0.0.1:3001', host)
   }
 
   console.log(

@@ -282,10 +282,7 @@ const ReaderScreen = ({ route, navigation }) => {
                     duration: clapAnimationDuration,
                   })
                 }}>
-                <Icon
-                  name={'favorite-border'}
-                  style={themedStyles.actionBarIcon}
-                />
+                <Text style={themedStyles.boostIcon}>👏</Text>
                 <View>
                   <Animated.View
                     style={[
@@ -379,9 +376,13 @@ const styles = theme =>
       fontSize: 25,
       color: theme.colors.foreground,
     },
+    boostIcon: {
+      fontSize: 27,
+      paddingBottom: 1,
+    },
     actionBarText: {
       fontFamily: theme.text.body.family,
-      fontSize: 15,
+      fontSize: 17,
       fontWeight: theme.text.body.weight,
       color: theme.colors.foreground,
       marginLeft: 5,
