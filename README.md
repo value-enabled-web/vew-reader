@@ -1,10 +1,51 @@
-# 👨‍🔬 vew-reader
+# 📖 vew-reader
 
-An experimental reader prototype for [Value-Enabled Web](https://github.com/seetee-io/value-enabled-web).
+An experimental reader prototype for the [Value-Enabled Web](https://github.com/seetee-io/value-enabled-web).
 
-This protoype makes use of [`vew-api`](https://github.com/seetee-io/vew-api), running at [`https://vat.monocle.cnixbtc.com/api`](https://vat.monocle.cnixbtc.com/api) for bringing articles into a readable format.
+## 📦 Components
 
-## How to Run
+```
+                   +----------------+ +----------------+
+                   |     Local      | |  vew-accounts  |
+                   |    Regtest     | |    (LNBits)    |
+                   |                | |                |
+                   | docker/regtest | | docker/mainnet |
+                   +----------------+ +----------------+
+                           ^                  ^
+                           |                  |
+                           |                  |
+                           +---------+--------+
+                                     |
++--------------------+    +----------+---------+
+|                    |    |                    |
+|       vew-api      |    |      Custodial     |
+|  (readability.js)  |    |     LN Accounts    |
+|                    |    |       System       |
+|                    |    |                    |
++--------------------+    +--------------------+
+           ^                         ^
+           |                         |
+           |                         |
+           +------------+------------+
+                        |
+             +----------+---------+
+             |                    |
+             |     vew-reader     |
+             |    (Reader App)    |
+             |                    |
+             +--------------------+
+```
+
+- [`vew-reader`](https://github.com/seetee-io/vew-reader)
+    - The mobile reader app.
+- [`vew-api`](https://github.com/seetee-io/vew-api)
+    - Wrapper around Mozilla's [`readability-js`](https://github.com/mozilla/readability).
+    - Running at [`https://vat.monocle.cnixbtc.com/api`](https://vat.monocle.cnixbtc.com/api)
+- [`vew-accounts`](https://github.com/seetee-io/vew-accounts)
+    - Wrapper around LNBits for custodial LN accounts. See `docker/mainnet`.
+    - For a drop-in regtest version with the same API, see `docker/regtest`.
+
+## 🚀 How to Run
 
 You can run teh app either against a local regtest environment or in mainnet environment.
 
