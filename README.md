@@ -40,7 +40,6 @@ An experimental reader prototype for the [Value-Enabled Web](https://github.com/
     - The mobile reader app.
 - [`vew-api`](https://github.com/seetee-io/vew-api)
     - Wrapper around Mozilla's [`readability-js`](https://github.com/mozilla/readability).
-    - Running at [`https://vat.monocle.cnixbtc.com/api`](https://vat.monocle.cnixbtc.com/api)
 - [`vew-accounts`](https://github.com/seetee-io/vew-accounts)
     - Wrapper around LNBits for custodial LN accounts. See `docker/mainnet`.
     - For a drop-in regtest version with the same API, see `docker/regtest`.
